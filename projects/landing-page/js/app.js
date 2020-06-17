@@ -43,7 +43,7 @@ function activateSection() {
   const sectionToActivate = getVisibleLandingContainer().parentElement;
   if (sectionToActivate !== activeSection) {
     // TODO: Optimize redraw/reflow
-    [activeSection, sectionToActivate].forEach(s => s.classList.toggle('your-active-class'));
+    [activeSection, sectionToActivate].forEach(s => s.classList.toggle('active'));
     activeSection = sectionToActivate;
   }
   scrollTimer = null;
