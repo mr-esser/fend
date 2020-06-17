@@ -55,9 +55,18 @@ function activateSection() {
   scrollTimer = null;
 }
 
-function handleScroll(event) {
+function handleScroll() {
   if (!scrollTimer) {
     scrollTimer = setTimeout(activateSection, 250);
+  }
+}
+
+// on the ul
+function handleClick(event) {
+  const clicked = [...navBar.querySelectorAll(".menu__link")].find((item) => item === event.target);
+  if (clicked) {
+    const target = document.getElementById(clicked.getAttribute("data-target"));
+    target.scrollIntoView();
   }
 }
 /**
@@ -97,5 +106,6 @@ buildNavBar();
 
 // Set sections as active
 
-window.addEventListener("scroll", (event) => handleScroll(event));
+window.addEventListener("scroll", handleScroll);
+window.addEventListener("click", handleClick);
 console.log("Scipt loaded!");
