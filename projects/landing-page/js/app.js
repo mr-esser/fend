@@ -72,16 +72,15 @@ function buildNavBar() {
   const navigableSections = getAllLandingContainers().map((l) => l.parentElement);
   navigableSections.map((section) => buildNavItem(section)).forEach((li) => fragment.appendChild(li));
   navBar.appendChild(fragment);
-}
 
-function buildNavItem(section) {
-  const li = document.createElement("LI");
-  const liText = section.getAttribute("data-nav");
-  const liTarget = section.id;
-  li.innerHTML = `<span data-target="${liTarget}" class="menu__link">${liText}</span>`;
-  return li;
+  function buildNavItem(section) {
+    const li = document.createElement("LI");
+    const liText = section.getAttribute("data-nav");
+    const liTarget = section.id;
+    li.innerHTML = `<span data-target="${liTarget}" class="menu__link">${liText}</span>`;
+    return li;
+  }
 }
-
 // Add class 'active' to section when near top of viewport
 
 // Scroll to anchor ID using scrollTO event
