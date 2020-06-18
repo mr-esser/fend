@@ -15,10 +15,9 @@
 
 /**
  * Define Global Variables
- *
  */
 
-const navBar = document.getElementById("navbar__list");
+const NAV_BAR = document.getElementById("navbar__list");
 
 let scrollTimer = null;
 let activeSection = document.querySelector("section");
@@ -61,7 +60,7 @@ function handleScroll() {
 // on the ul
 function handleClick(event) {
   event.preventDefault();
-  const clicked = [...navBar.querySelectorAll(".menu__link")].find((item) => item === event.target);
+  const clicked = [...NAV_BAR.querySelectorAll(".menu__link")].find((item) => item === event.target);
   if (clicked) {
     const target = document.getElementById(clicked.getAttribute("href").slice(1));
     target.scrollIntoView();
@@ -78,7 +77,7 @@ function buildNavBar() {
   const fragment = document.createDocumentFragment();
   const navigableSections = getAllLandingContainers().map((l) => l.parentElement);
   navigableSections.map((section) => buildNavItem(section)).forEach((li) => fragment.appendChild(li));
-  navBar.appendChild(fragment);
+  NAV_BAR.appendChild(fragment);
 
   function buildNavItem(section) {
     const li = document.createElement("LI");
