@@ -19,7 +19,7 @@
 
 const NAV_BAR = document.getElementById("navbar__list");
 
-let scrollTimer = null;
+let scrollTimer; 
 let activeSection = document.querySelector("section");
 
 /**
