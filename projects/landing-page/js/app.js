@@ -45,19 +45,20 @@ function buildNavBar() {
 
 // Add class 'active' to section when near top of viewport
 function activateSection() {
-  const sectionToActivate = getVisibleLandingContainer().parentElement;
+  const sectionToActivate = findFirstVisibleLandingContainer().parentElement;
   if (sectionToActivate !== activeSection) {
     // TODO: Optimize redraw/reflow
     [activeSection, sectionToActivate].forEach((s) => s.classList.toggle("active"));
     activeSection = sectionToActivate;
   }
+  // TODO: Move up
   scrollTimer = null;
 
-  function getVisibleLandingContainer() {
+  function findFirstVisibleLandingContainer() {
     return getAllLandingContainers().find(isVisible);
 
-    function isVisible(section) {
-      const bounds = section.getBoundingClientRect();
+    function isVisible(element) {
+      const bounds = element.getBoundingClientRect();
       return bounds.top >= 0 || bounds.bottom >= 0;
     }
   }
