@@ -84,7 +84,7 @@ function buildNavBar() {
 
   function buildNavItem(section) {
     const li = document.createElement("LI");
-    const liText = section.getAttribute("data-nav");
+    const liText = section.dataset.nav;
     const liTarget = section.id;
     li.innerHTML = `<a class="menu__link" href="\#${liTarget}">${liText}</span>`;
     return li;
