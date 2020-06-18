@@ -13,65 +13,20 @@
  *
  */
 
-/**
- * Define Global Variables
- */
-
+/**** Define Global Variables ****/
 const NAV_BAR = document.getElementById("navbar__list");
 
-let scrollTimer; 
+let scrollTimer;
 let activeSection = document.querySelector("section");
+/**** End Global Variables ****/
 
-/**
- * End Global Variables
- *
- * Start Helper Functions
- *
- */
-function isVisible(section) {
-  const bounds = section.getBoundingClientRect();
-  return bounds.top >= 0 || bounds.bottom >= 0;
-}
-
-function getVisibleLandingContainer() {
-  return getAllLandingContainers().find(isVisible);
-}
-
+/**** Start Helper Functions ****/
 function getAllLandingContainers() {
   return [...document.querySelectorAll("div.landing__container")];
 }
+/**** End Helper Functions ****/
 
-function activateSection() {
-  const sectionToActivate = getVisibleLandingContainer().parentElement;
-  if (sectionToActivate !== activeSection) {
-    // TODO: Optimize redraw/reflow
-    [activeSection, sectionToActivate].forEach((s) => s.classList.toggle("active"));
-    activeSection = sectionToActivate;
-  }
-  scrollTimer = null;
-}
-
-function handleScroll() {
-  if (!scrollTimer) {
-    scrollTimer = setTimeout(activateSection, 250);
-  }
-}
-
-// on the ul
-function handleClick(event) {
-  event.preventDefault();
-  const clicked = [...NAV_BAR.querySelectorAll(".menu__link")].find((item) => item === event.target);
-  if (clicked) {
-    const target = document.getElementById(clicked.getAttribute("href").slice(1));
-    target.scrollIntoView();
-  }
-}
-/**
- * End Helper Functions
- * Begin Main Functions
- *
- */
-
+/**** Begin Main Functions ****/
 // build the nav
 function buildNavBar() {
   const fragment = document.createDocumentFragment();
@@ -87,20 +42,51 @@ function buildNavBar() {
     return li;
   }
 }
+
 // Add class 'active' to section when near top of viewport
+function activateSection() {
+  const sectionToActivate = getVisibleLandingContainer().parentElement;
+  if (sectionToActivate !== activeSection) {
+    // TODO: Optimize redraw/reflow
+    [activeSection, sectionToActivate].forEach((s) => s.classList.toggle("active"));
+    activeSection = sectionToActivate;
+  }
+  scrollTimer = null;
+
+  function getVisibleLandingContainer() {
+    return getAllLandingContainers().find(isVisible);
+
+    function isVisible(section) {
+      const bounds = section.getBoundingClientRect();
+      return bounds.top >= 0 || bounds.bottom >= 0;
+    }
+  }
+}
 
 // Scroll to anchor ID using scrollTO event
 
-/**
- * End Main Functions
- * Begin Events
- *
- */
+/**** End Main Functions ****/
 
+/**** Begin Events ****/
 // Build menu
 buildNavBar();
+
 // Scroll to section on link click
+function handleClick(event) {
+  event.preventDefault();
+  const clicked = [...NAV_BAR.querySelectorAll(".menu__link")].find((item) => item === event.target);
+  if (clicked) {
+    const target = document.getElementById(clicked.getAttribute("href").slice(1));
+    target.scrollIntoView();
+  }
+}
 
 // Set sections as active
+function handleScroll() {
+  if (!scrollTimer) {
+    scrollTimer = setTimeout(activateSection, 250);
+  }
+}
+
 window.addEventListener("scroll", handleScroll);
 window.addEventListener("click", handleClick);
