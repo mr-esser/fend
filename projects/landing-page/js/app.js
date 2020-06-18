@@ -21,7 +21,6 @@
 const navBar = document.getElementById("navbar__list");
 
 let scrollTimer = null;
-
 let activeSection = document.querySelector("section");
 console.log(activeSection);
 console.log(getVisibleLandingContainer());
@@ -63,9 +62,10 @@ function handleScroll() {
 
 // on the ul
 function handleClick(event) {
+  event.preventDefault();
   const clicked = [...navBar.querySelectorAll(".menu__link")].find((item) => item === event.target);
   if (clicked) {
-    const target = document.getElementById(clicked.getAttribute("data-target"));
+    const target = document.getElementById(clicked.getAttribute("href").slice(1));
     target.scrollIntoView();
   }
 }
@@ -86,7 +86,7 @@ function buildNavBar() {
     const li = document.createElement("LI");
     const liText = section.getAttribute("data-nav");
     const liTarget = section.id;
-    li.innerHTML = `<span data-target="${liTarget}" class="menu__link">${liText}</span>`;
+    li.innerHTML = `<a class="menu__link" href="\#${liTarget}">${liText}</span>`;
     return li;
   }
 }
