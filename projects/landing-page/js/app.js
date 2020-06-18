@@ -22,8 +22,6 @@ const navBar = document.getElementById("navbar__list");
 
 let scrollTimer = null;
 let activeSection = document.querySelector("section");
-console.log(activeSection);
-console.log(getVisibleLandingContainer());
 
 /**
  * End Global Variables
@@ -105,7 +103,5 @@ buildNavBar();
 // Scroll to section on link click
 
 // Set sections as active
-
 window.addEventListener("scroll", handleScroll);
 window.addEventListener("click", handleClick);
-console.log("Scipt loaded!");
