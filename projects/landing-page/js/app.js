@@ -24,22 +24,23 @@ let activeSection = document.querySelector("section");
 function findAllLandingContainers() {
   return [...document.querySelectorAll("div.landing__container")];
 }
+
 /**** End Helper Functions ****/
 
 /**** Begin Main Functions ****/
 // build the nav
-function buildNavBar() {
+function fillNavBar() {
   const fragment = document.createDocumentFragment();
-  const navigableSections = findAllLandingContainers().map((l) => l.parentElement);
-  navigableSections.map((section) => buildNavItem(section)).forEach((li) => fragment.appendChild(li));
+  const navigableSections = findAllLandingContainers().map((landingContainer) => landingContainer.parentElement);
+  navigableSections.map((section) => buildNavItem(section)).forEach((navItem) => fragment.appendChild(navItem));
   NAV_BAR.appendChild(fragment);
 
   function buildNavItem(section) {
-    const li = document.createElement("LI");
-    const liText = section.dataset.nav;
-    const liTarget = section.id;
-    li.innerHTML = `<a class="menu__link" href="\#${liTarget}">${liText}</span>`;
-    return li;
+    const item = document.createElement("LI");
+    const linkText = section.dataset.nav;
+    const linkHref = section.id;
+    item.innerHTML = `<a class="menu__link" href="\#${linkHref}">${linkText}</span>`;
+    return item;
   }
 }
 
@@ -68,7 +69,7 @@ function activateSection() {
 function scrollToAnchor(href) {
   const targetId = href.slice(1);
   const target = document.getElementById(targetId);
-  target.scrollIntoView({behavior: "smooth"});
+  target.scrollIntoView({ behavior: "smooth" });
 }
 
 /**** End Main Functions ****/
@@ -76,7 +77,7 @@ function scrollToAnchor(href) {
 /**** Begin Events ****/
 // Build menu
 // TODO: wrap in event. Page loaded?
-buildNavBar();
+fillNavBar();
 
 // Scroll to section on link click
 function handleClick(event) {
