@@ -14,25 +14,30 @@
  */
 
 /**** Define Global Variables ****/
-// TODO: Make mutable and set via onload handler
-const NAV_BAR_LIST = getNavBarList();
-const LANDING_CONTAINERS = findAllLandingContainers();
-
-let isScrolling = false;
-let activeSection = getFirstSection();
+// Initialized by loaded handler
+let navBarList, landingContainers, isScrolling, activeSection;
 /**** End Global Variables ****/
 
 /**** Start Helper Functions ****/
-function getNavBarList() {
-  return document.getElementById("navbar__list");
+function initApp() {
+  initGlobalState();
+  initListeners();
+
+  function initGlobalState() {
+    navBarList = document.getElementById("navbar__list");
+    landingContainers = [...document.querySelectorAll("div.landing__container")];
+    activeSection = landingContainers[0].parentElement;
+  }
+
+  function initListeners() {
+    window.addEventListener("scroll", handleScroll);
+    navBarList.addEventListener("click", handleNavLinkClicked);
+  }
 }
 
-function findAllLandingContainers() {
-  return [...document.querySelectorAll("div.landing__container")];
-}
-
-function getFirstSection(landingContaines) {
-  return LANDING_CONTAINERS[0].parentElement;
+function isNavLink(target) {
+  const tagName = target.nodeName;
+  return tagName && tagName.toUpperCase() === "A";
 }
 /**** End Helper Functions ****/
 
@@ -41,9 +46,9 @@ function getFirstSection(landingContaines) {
 // TODO: Test on page without sections (legal). Or an additional fifth section.
 function fillNavBar() {
   const fragment = document.createDocumentFragment();
-  const navigableSections = LANDING_CONTAINERS.map((landingContainer) => landingContainer.parentElement);
+  const navigableSections = landingContainers.map((landingContainer) => landingContainer.parentElement);
   navigableSections.map((section) => buildNavItem(section)).forEach((navItem) => fragment.appendChild(navItem));
-  NAV_BAR_LIST.appendChild(fragment);
+  navBarList.appendChild(fragment);
 
   function buildNavItem(section) {
     const item = document.createElement("LI");
@@ -63,11 +68,11 @@ function activateSection() {
     [activeSection, firstVisibleSection].forEach((s) => s.classList.toggle("active"));
     activeSection = firstVisibleSection;
   }
-  // Reset the timer.
+  // Reset the scroll flag!
   isScrolling = false;
 
   function findFirstVisibleLandingContainer() {
-    return LANDING_CONTAINERS.find(isVisible);
+    return landingContainers.find(isVisible);
 
     function isVisible(element) {
       const bounds = element.getBoundingClientRect();
@@ -86,8 +91,10 @@ function scrollToAnchor(href) {
 
 /**** Begin Events ****/
 // Build menu
-// TODO: wrap in event. Page loaded?
-fillNavBar();
+function handleDOMContentLoaded(_event) {
+  initApp();
+  fillNavBar();
+}
 
 // Scroll to section on link click
 function handleNavLinkClicked(event) {
@@ -97,11 +104,6 @@ function handleNavLinkClicked(event) {
   const clicked = event.target;
   if (isNavLink(clicked)) {
     scrollToAnchor(clicked.getAttribute("href"));
-  }
-
-  function isNavLink(target) {
-    const elementTag = target.nodeName;
-    return elementTag && elementTag.toUpperCase() === "A";
   }
 }
 
@@ -113,5 +115,6 @@ function handleScroll(_event) {
   }
 }
 
-window.addEventListener("scroll", handleScroll);
-NAV_BAR_LIST.addEventListener("click", handleNavLinkClicked);
+// Defer initializing and running the script until DOM is ready.
+// Needed to load the script in the document's <head>.
+window.addEventListener("DOMContentLoaded", handleDOMContentLoaded);
