@@ -15,7 +15,7 @@
 
 /**** Define Global Variables ****/
 // TODO: Make mutable and set via onload handler
-const NAV_BAR = getNavBar();
+const NAV_BAR_LIST = getNavBarList();
 const LANDING_CONTAINERS = findAllLandingContainers();
 
 let isScrolling = false;
@@ -23,7 +23,7 @@ let activeSection = getFirstSection();
 /**** End Global Variables ****/
 
 /**** Start Helper Functions ****/
-function getNavBar() {
+function getNavBarList() {
   return document.getElementById("navbar__list");
 }
 
@@ -38,11 +38,12 @@ function getFirstSection(landingContaines) {
 
 /**** Begin Main Functions ****/
 // build the nav
+// TODO: Test on page without sections (legal). Or an additional fifth section.
 function fillNavBar() {
   const fragment = document.createDocumentFragment();
   const navigableSections = LANDING_CONTAINERS.map((landingContainer) => landingContainer.parentElement);
   navigableSections.map((section) => buildNavItem(section)).forEach((navItem) => fragment.appendChild(navItem));
-  NAV_BAR.appendChild(fragment);
+  NAV_BAR_LIST.appendChild(fragment);
 
   function buildNavItem(section) {
     const item = document.createElement("LI");
@@ -55,13 +56,14 @@ function fillNavBar() {
 
 // Add class 'active' to section when near top of viewport
 function activateSection() {
-  const sectionToActivate = findFirstVisibleLandingContainer().parentElement;
-  if (sectionToActivate !== activeSection) {
+  // TODO: There could be no visible section at all (legal).
+  const firstVisibleSection = findFirstVisibleLandingContainer().parentElement;
+  if (firstVisibleSection !== activeSection) {
     // TODO: Optimize redraw/reflow
-    [activeSection, sectionToActivate].forEach((s) => s.classList.toggle("active"));
-    activeSection = sectionToActivate;
+    [activeSection, firstVisibleSection].forEach((s) => s.classList.toggle("active"));
+    activeSection = firstVisibleSection;
   }
-  // Reset the timer. TODO: Consider renaming to isScrolling: boolean.
+  // Reset the timer.
   isScrolling = false;
 
   function findFirstVisibleLandingContainer() {
@@ -80,7 +82,6 @@ function scrollToAnchor(href) {
   const target = document.getElementById(targetId);
   target.scrollIntoView({ behavior: "smooth" });
 }
-
 /**** End Main Functions ****/
 
 /**** Begin Events ****/
@@ -89,16 +90,23 @@ function scrollToAnchor(href) {
 fillNavBar();
 
 // Scroll to section on link click
-function handleClick(event) {
+function handleNavLinkClicked(event) {
+  // Prevent polluting the page history with anchor URLs
   event.preventDefault();
-  const clicked = [...NAV_BAR.querySelectorAll(".menu__link")].find((item) => item === event.target);
-  if (clicked) {
+
+  const clicked = event.target;
+  if (isNavLink(clicked)) {
     scrollToAnchor(clicked.getAttribute("href"));
+  }
+
+  function isNavLink(target) {
+    const elementTag = target.nodeName;
+    return elementTag && elementTag.toUpperCase() === "A";
   }
 }
 
 // Set sections as active
-function handleScroll() {
+function handleScroll(_event) {
   if (!isScrolling) {
     isScrolling = true;
     setTimeout(activateSection, 250);
@@ -106,4 +114,4 @@ function handleScroll() {
 }
 
 window.addEventListener("scroll", handleScroll);
-window.addEventListener("click", handleClick);
+NAV_BAR_LIST.addEventListener("click", handleNavLinkClicked);
