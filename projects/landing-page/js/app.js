@@ -14,24 +14,33 @@
  */
 
 /**** Define Global Variables ****/
-const NAV_BAR = document.getElementById("navbar__list");
+// TODO: Make mutable and set via onload handler
+const NAV_BAR = getNavBar();
+const LANDING_CONTAINERS = findAllLandingContainers();
 
-let scrollTimer;
-let activeSection = document.querySelector("section");
+let isScrolling = false;
+let activeSection = getFirstSection();
 /**** End Global Variables ****/
 
 /**** Start Helper Functions ****/
+function getNavBar() {
+  return document.getElementById("navbar__list");
+}
+
 function findAllLandingContainers() {
   return [...document.querySelectorAll("div.landing__container")];
 }
 
+function getFirstSection(landingContaines) {
+  return LANDING_CONTAINERS[0].parentElement;
+}
 /**** End Helper Functions ****/
 
 /**** Begin Main Functions ****/
 // build the nav
 function fillNavBar() {
   const fragment = document.createDocumentFragment();
-  const navigableSections = findAllLandingContainers().map((landingContainer) => landingContainer.parentElement);
+  const navigableSections = LANDING_CONTAINERS.map((landingContainer) => landingContainer.parentElement);
   navigableSections.map((section) => buildNavItem(section)).forEach((navItem) => fragment.appendChild(navItem));
   NAV_BAR.appendChild(fragment);
 
@@ -53,10 +62,10 @@ function activateSection() {
     activeSection = sectionToActivate;
   }
   // Reset the timer. TODO: Consider renaming to isScrolling: boolean.
-  scrollTimer = null;
+  isScrolling = false;
 
   function findFirstVisibleLandingContainer() {
-    return findAllLandingContainers().find(isVisible);
+    return LANDING_CONTAINERS.find(isVisible);
 
     function isVisible(element) {
       const bounds = element.getBoundingClientRect();
@@ -90,8 +99,9 @@ function handleClick(event) {
 
 // Set sections as active
 function handleScroll() {
-  if (!scrollTimer) {
-    scrollTimer = setTimeout(activateSection, 250);
+  if (!isScrolling) {
+    isScrolling = true;
+    setTimeout(activateSection, 250);
   }
 }
 
