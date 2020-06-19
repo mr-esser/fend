@@ -21,7 +21,7 @@ let activeSection = document.querySelector("section");
 /**** End Global Variables ****/
 
 /**** Start Helper Functions ****/
-function getAllLandingContainers() {
+function findAllLandingContainers() {
   return [...document.querySelectorAll("div.landing__container")];
 }
 /**** End Helper Functions ****/
@@ -30,7 +30,7 @@ function getAllLandingContainers() {
 // build the nav
 function buildNavBar() {
   const fragment = document.createDocumentFragment();
-  const navigableSections = getAllLandingContainers().map((l) => l.parentElement);
+  const navigableSections = findAllLandingContainers().map((l) => l.parentElement);
   navigableSections.map((section) => buildNavItem(section)).forEach((li) => fragment.appendChild(li));
   NAV_BAR.appendChild(fragment);
 
@@ -51,11 +51,11 @@ function activateSection() {
     [activeSection, sectionToActivate].forEach((s) => s.classList.toggle("active"));
     activeSection = sectionToActivate;
   }
-  // TODO: Move up
+  // Reset the timer. TODO: Consider renaming to isScrolling: boolean.
   scrollTimer = null;
 
   function findFirstVisibleLandingContainer() {
-    return getAllLandingContainers().find(isVisible);
+    return findAllLandingContainers().find(isVisible);
 
     function isVisible(element) {
       const bounds = element.getBoundingClientRect();
@@ -65,11 +65,17 @@ function activateSection() {
 }
 
 // Scroll to anchor ID using scrollTO event
+function scrollToAnchor(href) {
+  const targetId = href.slice(1);
+  const target = document.getElementById(targetId);
+  target.scrollIntoView({behavior: "smooth"});
+}
 
 /**** End Main Functions ****/
 
 /**** Begin Events ****/
 // Build menu
+// TODO: wrap in event. Page loaded?
 buildNavBar();
 
 // Scroll to section on link click
@@ -77,8 +83,7 @@ function handleClick(event) {
   event.preventDefault();
   const clicked = [...NAV_BAR.querySelectorAll(".menu__link")].find((item) => item === event.target);
   if (clicked) {
-    const target = document.getElementById(clicked.getAttribute("href").slice(1));
-    target.scrollIntoView();
+    scrollToAnchor(clicked.getAttribute("href"));
   }
 }
 
