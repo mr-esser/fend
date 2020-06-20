@@ -33,9 +33,11 @@ function initApp() {
   function initGlobalState() {
     navBarList = document.getElementById('navbar__list');
     landingContainers = [
-      ...document.querySelectorAll('div.landing__container')
+      ...document.querySelectorAll('div.landing__container'),
     ];
-    activeSection = landingContainers[0].parentElement;
+    if (landingContainers.length > 0) {
+      activeSection = landingContainers[0].parentElement;
+    }
   }
 
   function initListeners() {
@@ -52,7 +54,6 @@ function isNavLink(target) {
 
 /*      Begin Main Functions      */
 // build the nav
-// TODO: Test on page without sections (legal). Or an additional fifth section.
 function fillNavBar() {
   const fragment = document.createDocumentFragment();
   const navigableSections = landingContainers.map(
@@ -68,15 +69,18 @@ function fillNavBar() {
     const linkText = section.dataset.nav;
     const linkHref = section.id;
     item.innerHTML =
-         `<a class="menu__link" href="#${linkHref}">${linkText}</span>`;
+      `<a class="menu__link" href="#${linkHref}">${linkText}</span>`;
     return item;
   }
 }
 
 // Add class 'active' to section when near top of viewport
 function activateSection() {
-  // TODO: There could be no visible section at all (legal).
-  const firstVisibleSection = findFirstVisibleLandingContainer().parentElement;
+  const firstVisibleLandingContainer = findFirstVisibleLandingContainer();
+  if (!firstVisibleLandingContainer) {
+    return; // nothing to activate
+  }
+  const firstVisibleSection = firstVisibleLandingContainer.parentElement;
   if (firstVisibleSection !== activeSection) {
     [activeSection, firstVisibleSection].forEach((section) =>
       section.classList.toggle('active')
