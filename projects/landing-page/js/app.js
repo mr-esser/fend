@@ -79,8 +79,8 @@ function activateSection() {
   const firstVisibleSection = findFirstVisibleLandingContainer().parentElement;
   if (firstVisibleSection !== activeSection) {
     // TODO: Optimize redraw/reflow
-    [activeSection, firstVisibleSection].forEach((s) =>
-      s.classList.toggle('active')
+    [activeSection, firstVisibleSection].forEach((section) =>
+      section.classList.toggle('active')
     );
     activeSection = firstVisibleSection;
   }
