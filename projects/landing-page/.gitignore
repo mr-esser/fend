@@ -65,4 +65,3 @@ tags
 # Needed these files to set up ESLint locally.
 package.json
 package-lock.json
-.eslintrc.json

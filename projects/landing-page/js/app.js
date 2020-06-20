@@ -1,7 +1,3 @@
-/* eslint-disable object-curly-spacing */
-/* eslint-disable indent */
-/* eslint-disable comma-dangle */
-/* eslint-disable require-jsdoc */
 /**
  *
  * Manipulating the DOM exercise.
@@ -57,11 +53,11 @@ function isNavLink(target) {
 function fillNavBar() {
   const fragment = document.createDocumentFragment();
   const navigableSections = landingContainers.map(
-    (landingContainer) => landingContainer.parentElement
+      (landingContainer) => landingContainer.parentElement,
   );
   navigableSections
-    .map((section) => buildNavItem(section))
-    .forEach((navItem) => fragment.appendChild(navItem));
+      .map((section) => buildNavItem(section))
+      .forEach((navItem) => fragment.appendChild(navItem));
   navBarList.appendChild(fragment);
 
   function buildNavItem(section) {
@@ -83,7 +79,7 @@ function activateSection() {
   const firstVisibleSection = firstVisibleLandingContainer.parentElement;
   if (firstVisibleSection !== activeSection) {
     [activeSection, firstVisibleSection].forEach((section) =>
-      section.classList.toggle('active')
+      section.classList.toggle('active'),
     );
     activeSection = firstVisibleSection;
   }
@@ -104,7 +100,7 @@ function activateSection() {
 function scrollToAnchor(href) {
   const targetId = href.slice(1);
   const target = document.getElementById(targetId);
-  target.scrollIntoView({ behavior: 'smooth' });
+  target.scrollIntoView({behavior: 'smooth'});
 }
 /*      End Main Functions      */
 
