@@ -17,7 +17,7 @@
 // Initialized by DOM ready handler
 let navBarList = null;
 let landingContainers = null;
-let isScrolling = false;
+let scrollTimer = null;
 let activeSection = null;
 /*     End Global Variables        */
 
@@ -37,7 +37,6 @@ const initApp = function() {
     window.addEventListener('scroll', handleScroll);
     navBarList.addEventListener('click', handleNavLinkClicked);
   };
-
 
   initGlobalState();
   initListeners();
@@ -94,8 +93,8 @@ const activateSection = function() {
     );
     activeSection = firstVisibleSection;
   }
-  // Reset the scroll flag. Scroll event is handled after activating a section!
-  isScrolling = false;
+  // Clear the scroll timer so that the next event will not try to clear it.
+  scrollTimer = null;
 };
 
 // Scroll to anchor ID using scrollTO
@@ -125,10 +124,13 @@ const handleNavLinkClicked = function(event) {
 
 // Set sections as active
 const handleScroll = function() {
-  if (!isScrolling) {
-    isScrolling = true;
-    setTimeout(activateSection, 250);
+  if (scrollTimer !== null) {
+    // Discard the last event...
+    clearTimeout(scrollTimer);
   }
+  // ... and schedule the current one. Will activate,
+  // if no more scroll events are arrive.
+  scrollTimer = setTimeout(activateSection, 200);
 };
 
 // Defer initializing and running the script until DOM is ready.
