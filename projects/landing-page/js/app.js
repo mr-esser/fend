@@ -22,11 +22,8 @@ let activeSection = null;
 /*     End Global Variables        */
 
 /*     Start Helper Functions      */
-function initApp() {
-  initGlobalState();
-  initListeners();
-
-  function initGlobalState() {
+const initApp = function() {
+  const initGlobalState = function() {
     navBarList = document.getElementById('navbar__list');
     landingContainers = [
       ...document.querySelectorAll('div.landing__container'),
@@ -34,44 +31,58 @@ function initApp() {
     if (landingContainers.length > 0) {
       activeSection = landingContainers[0].parentElement;
     }
-  }
+  };
 
-  function initListeners() {
+  const initListeners = function() {
     window.addEventListener('scroll', handleScroll);
     navBarList.addEventListener('click', handleNavLinkClicked);
-  }
-}
+  };
 
-function isNavLink(target) {
+
+  initGlobalState();
+  initListeners();
+};
+
+const isNavLink = function(target) {
   const tagName = target.nodeName;
   return tagName && tagName.toUpperCase() === 'A';
-}
+};
 /*      End Helper Functions      */
 
 /*      Begin Main Functions      */
 // build the nav
-function fillNavBar() {
-  const fragment = document.createDocumentFragment();
-  const navigableSections = landingContainers.map(
-      (landingContainer) => landingContainer.parentElement,
-  );
-  navigableSections
-      .map((section) => buildNavItem(section))
-      .forEach((navItem) => fragment.appendChild(navItem));
-  navBarList.appendChild(fragment);
-
-  function buildNavItem(section) {
+const fillNavBar = function() {
+  const buildNavItem = function(section) {
     const item = document.createElement('LI');
     const linkText = section.dataset.nav;
     const linkHref = section.id;
     item.innerHTML =
       `<a class="menu__link" href="#${linkHref}">${linkText}</span>`;
     return item;
-  }
-}
+  };
+
+  const fragment = document.createDocumentFragment();
+
+  const navigableSections = landingContainers.map(
+      (landingContainer) => landingContainer.parentElement
+  );
+  navigableSections
+      .map((section) => buildNavItem(section))
+      .forEach((navItem) => fragment.appendChild(navItem));
+
+  navBarList.appendChild(fragment);
+};
 
 // Add class 'active' to section when near top of viewport
-function activateSection() {
+const activateSection = function() {
+  const isVisible = function(element) {
+    const bounds = element.getBoundingClientRect();
+    return bounds.top >= 0 || bounds.bottom >= 0;
+  };
+  const findFirstVisibleLandingContainer = function() {
+    return landingContainers.find(isVisible);
+  };
+
   const firstVisibleLandingContainer = findFirstVisibleLandingContainer();
   if (!firstVisibleLandingContainer) {
     return; // nothing to activate
@@ -79,56 +90,46 @@ function activateSection() {
   const firstVisibleSection = firstVisibleLandingContainer.parentElement;
   if (firstVisibleSection !== activeSection) {
     [activeSection, firstVisibleSection].forEach((section) =>
-      section.classList.toggle('active'),
+      section.classList.toggle('active')
     );
     activeSection = firstVisibleSection;
   }
-  // Reset the scroll flag!
+  // Reset the scroll flag. Scroll event is handled after activating a section!
   isScrolling = false;
+};
 
-  function findFirstVisibleLandingContainer() {
-    return landingContainers.find(isVisible);
-
-    function isVisible(element) {
-      const bounds = element.getBoundingClientRect();
-      return bounds.top >= 0 || bounds.bottom >= 0;
-    }
-  }
-}
-
-// Scroll to anchor ID using scrollTO event
-function scrollToAnchor(href) {
+// Scroll to anchor ID using scrollTO
+const scrollToAnchor = function(href) {
   const targetId = href.slice(1);
   const target = document.getElementById(targetId);
   target.scrollIntoView({behavior: 'smooth'});
-}
+};
 /*      End Main Functions      */
 
 /*      Begin Events            */
 // Build menu
-function handleDOMContentLoaded() {
+const handleDOMContentLoaded = function() {
   initApp();
   fillNavBar();
-}
+};
 
 // Scroll to section on link click
-function handleNavLinkClicked(event) {
+const handleNavLinkClicked = function(event) {
   // Prevent polluting the page history with anchor URLs
   event.preventDefault();
-
   const clicked = event.target;
   if (isNavLink(clicked)) {
     scrollToAnchor(clicked.getAttribute('href'));
   }
-}
+};
 
 // Set sections as active
-function handleScroll() {
+const handleScroll = function() {
   if (!isScrolling) {
     isScrolling = true;
     setTimeout(activateSection, 250);
   }
-}
+};
 
 // Defer initializing and running the script until DOM is ready.
 // Needed to load the script in the document's <head>.
