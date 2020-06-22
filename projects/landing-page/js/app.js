@@ -76,6 +76,8 @@ const fillNavBar = function() {
 const activateSection = function() {
   const isVisible = function(element) {
     const bounds = element.getBoundingClientRect();
+    // true if either top or bottom has a positive offset
+    // from the viewport's upper edge
     return bounds.top >= 0 || bounds.bottom >= 0;
   };
   const findFirstVisibleLandingContainer = function() {
@@ -84,7 +86,7 @@ const activateSection = function() {
 
   const firstVisibleLandingContainer = findFirstVisibleLandingContainer();
   if (!firstVisibleLandingContainer) {
-    return; // nothing to activate
+    return; // no visible containers, nothing to activate
   }
   const firstVisibleSection = firstVisibleLandingContainer.parentElement;
   if (firstVisibleSection !== activeSection) {
@@ -93,12 +95,14 @@ const activateSection = function() {
     );
     activeSection = firstVisibleSection;
   }
-  // Clear the scroll timer so that the next event will not try to clear it.
+  // Clear the scroll timer
+  // so that the next scroll event will not try to clear it
   scrollTimer = null;
 };
 
 // Scroll to anchor ID using scrollTO
 const scrollToAnchor = function(href) {
+  // Slice off the lead character '#'
   const targetId = href.slice(1);
   const target = document.getElementById(targetId);
   target.scrollIntoView({behavior: 'smooth'});
@@ -117,22 +121,24 @@ const handleNavLinkClicked = function(event) {
   // Prevent polluting the page history with anchor URLs
   event.preventDefault();
   const clicked = event.target;
+  // Just to make sure it was really the <a> that was clicked
   if (isNavLink(clicked)) {
     scrollToAnchor(clicked.getAttribute('href'));
   }
 };
 
 // Set sections as active
+// (as soon as the user has finished scrolling).
 const handleScroll = function() {
   if (scrollTimer !== null) {
     // Discard the last event...
     clearTimeout(scrollTimer);
   }
-  // ... and schedule the current one. Will activate,
-  // if no more scroll events are arrive.
+  // ... and schedule the current one.
+  // Will activate, if no more scroll events arrive.
   scrollTimer = setTimeout(activateSection, 200);
 };
 
 // Defer initializing and running the script until DOM is ready.
-// Needed to load the script in the document's <head>.
+// Needed to be able to load the script in the document's <head>.
 window.addEventListener('DOMContentLoaded', handleDOMContentLoaded);
