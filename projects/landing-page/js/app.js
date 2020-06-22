@@ -136,7 +136,7 @@ const handleScroll = function() {
   }
   // ... and schedule the current one.
   // Will activate, if no more scroll events arrive.
-  scrollTimer = setTimeout(activateSection, 200);
+  scrollTimer = setTimeout(activateSection, 100);
 };
 
 // Defer initializing and running the script until DOM is ready.
