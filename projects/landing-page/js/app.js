@@ -16,20 +16,28 @@
 /*     Define Global Variables     */
 // Initialized by DOM ready handler
 let navBarList = null;
-let landingContainers = null;
+let navigableSections = [];
 let scrollTimer = null;
 let activeSection = null;
 /*     End Global Variables        */
 
 /*     Start Helper Functions      */
+/*     Using nested helper functions to keep global namespace clean */
+/*     End Helper Functions      */
+
+/*      Begin Main Functions      */
 const initApp = function() {
   const initGlobalState = function() {
+    const findAllNavigableSections = function() {
+      // Consider only sections with a landing container
+      return [...document.querySelectorAll('section .landing__container')]
+          .map((landingContainer) => landingContainer.parentElement);
+    };
+
     navBarList = document.getElementById('navbar__list');
-    landingContainers = [
-      ...document.querySelectorAll('div.landing__container'),
-    ];
-    if (landingContainers.length > 0) {
-      activeSection = landingContainers[0].parentElement;
+    navigableSections = findAllNavigableSections();
+    if (navigableSections.length > 0) {
+      activeSection = navigableSections[0];
     }
   };
 
@@ -42,13 +50,6 @@ const initApp = function() {
   initListeners();
 };
 
-const isNavLink = function(target) {
-  const tagName = target.nodeName;
-  return tagName && tagName.toUpperCase() === 'A';
-};
-/*      End Helper Functions      */
-
-/*      Begin Main Functions      */
 // build the nav
 const fillNavBar = function() {
   const buildNavItem = function(section) {
@@ -61,42 +62,38 @@ const fillNavBar = function() {
   };
 
   const fragment = document.createDocumentFragment();
-
-  const navigableSections = landingContainers.map(
-      (landingContainer) => landingContainer.parentElement
-  );
   navigableSections
       .map((section) => buildNavItem(section))
       .forEach((navItem) => fragment.appendChild(navItem));
-
   navBarList.appendChild(fragment);
 };
 
 // Add class 'active' to section when near top of viewport
 const activateSection = function() {
+  /* Element is visible if either top or bottom has
+   * a positive offset from the viewport's upper edge
+   * and is not covered by the fixed nav bar. */
   const isVisible = function(element) {
     const bounds = element.getBoundingClientRect();
-    // true if either top or bottom has a positive offset
-    // from the viewport's upper edge
-    return bounds.top >= 0 || bounds.bottom >= 0;
+    const navBarHeight = navBarList.getBoundingClientRect().height;
+    return bounds.top - navBarHeight >= 0 || bounds.bottom - navBarHeight >= 0;
   };
-  const findFirstVisibleLandingContainer = function() {
-    return landingContainers.find(isVisible);
+  const findFirstVisibleSection = function() {
+    return navigableSections.find(isVisible);
   };
 
-  const firstVisibleLandingContainer = findFirstVisibleLandingContainer();
-  if (!firstVisibleLandingContainer) {
+  const firstVisibleSection = findFirstVisibleSection();
+  if (!firstVisibleSection) {
     return; // no visible containers, nothing to activate
   }
-  const firstVisibleSection = firstVisibleLandingContainer.parentElement;
   if (firstVisibleSection !== activeSection) {
     [activeSection, firstVisibleSection].forEach((section) =>
       section.classList.toggle('active')
     );
     activeSection = firstVisibleSection;
   }
-  // Clear the scroll timer
-  // so that the next scroll event will not try to clear it
+  // Delete the scroll timer so that
+  // the next scroll event will not attempt to clear it
   scrollTimer = null;
 };
 
@@ -105,12 +102,13 @@ const scrollToAnchor = function(href) {
   // Slice off the lead character '#'
   const targetId = href.slice(1);
   const target = document.getElementById(targetId);
+  // Smooth scrolling option only works on FF and Chromium
   target.scrollIntoView({behavior: 'smooth'});
 };
 /*      End Main Functions      */
 
 /*      Begin Events            */
-// Build menu
+// Build menu (and do general app initialization)
 const handleDOMContentLoaded = function() {
   initApp();
   fillNavBar();
@@ -118,6 +116,11 @@ const handleDOMContentLoaded = function() {
 
 // Scroll to section on link click
 const handleNavLinkClicked = function(event) {
+  const isNavLink = function(target) {
+    const tagName = target.nodeName;
+    return tagName && tagName.toUpperCase() === 'A';
+  };
+
   // Prevent polluting the page history with anchor URLs
   event.preventDefault();
   const clicked = event.target;
@@ -139,6 +142,6 @@ const handleScroll = function() {
   scrollTimer = setTimeout(activateSection, 100);
 };
 
-// Defer initializing and running the script until DOM is ready.
+// Defer initializing and running this script until DOM is ready.
 // Needed to be able to load the script in the document's <head>.
 window.addEventListener('DOMContentLoaded', handleDOMContentLoaded);
