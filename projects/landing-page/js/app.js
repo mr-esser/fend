@@ -83,15 +83,21 @@ const fillNavBar = function() {
 // Add class 'active' to section when near top of viewport
 const activateTopVisibleSection = function() {
   const findTopVisibleSection = function() {
-  /* Element is visible if either top or bottom has
-   * a positive offset from the viewport's upper edge
-   * and is not covered by the fixed nav bar. */
+    /* Element counts as visible if at least
+     * 15% if its height are showing below the nav bar.
+     * This tolerance helps reliably activate sections
+     * after scrolling. */
     const isVisible = function(element) {
-      const bounds = element.getBoundingClientRect();
+      const elementBounds = element.getBoundingClientRect();
       const navBarHeight = navBarList.getBoundingClientRect().height;
-      return bounds.top - navBarHeight >= 0 ||
-             bounds.bottom - navBarHeight >= 0
-      ;
+      if (elementBounds.top - navBarHeight >= 0) {
+        return true;
+      }
+      const elementBottomAdjusted = elementBounds.bottom - navBarHeight;
+      if (elementBottomAdjusted >= 0) {
+        const visibleArea = elementBottomAdjusted / elementBounds.height;
+        return visibleArea >= 0.15;
+      }
     };
 
     return navigableSections.find(isVisible);
@@ -114,11 +120,23 @@ const activateTopVisibleSection = function() {
 
 // Scroll to anchor ID using scrollTO
 const scrollToAnchor = function(href) {
+  const computeTargetPageY = function(target) {
+    const offsetViewportFromPageStart = window.pageYOffset;
+    const offsetTargetFromViewport = target.getBoundingClientRect().top;
+    const navBarHeight = navBarList.getBoundingClientRect().height;
+    // Nav should not cover the start of the target element,
+    // so stop scrolling a little farther up by subtracting the nav's height.
+    return (
+      offsetViewportFromPageStart + offsetTargetFromViewport - navBarHeight
+    );
+  };
+
   // Slice off the lead character '#'
   const targetId = href.slice(1);
   const target = document.getElementById(targetId);
-  // Smooth scrolling option only works on FF and Chromium
-  target.scrollIntoView({behavior: 'smooth'});
+  const targetY = computeTargetPageY(target);
+  // Unfortunately, smooth scrolling is not really supported
+  window.scroll(0, targetY);
 };
 /*      End Main Functions      */
 
