@@ -15,6 +15,7 @@
 
 /*     Define Global Variables     */
 // Initialized by DOM ready handler
+let main = null;
 let navBarList = null;
 let navigableSections = [];
 let scrollTimer = null;
@@ -30,17 +31,28 @@ const initApp = function() {
   const initGlobalState = function() {
     const findAllNavigableSections = function() {
       // Consider only sections with a landing container
-      return [...document.querySelectorAll('section .landing__container')]
-          .map((landingContainer) => landingContainer.parentElement);
+      return [...document.querySelectorAll('section .landing__container')].map(
+          (landingContainer) => landingContainer.parentElement
+      );
+    };
+    const activateTopSection = function(sections, container) {
+      // Must hide container here to avoid unnecessary reflows
+      container.style.display = 'none';
+      // Reset active bit on all sections to guarantee a clean state
+      sections.forEach((section) => section.classList.remove('active'));
+      const topSection = sections[0];
+      topSection.classList.add('active');
+      container.attributes.removeNamedItem('style');
+      return topSection;
     };
 
+    main = document.querySelector('main');
     navBarList = document.getElementById('navbar__list');
     navigableSections = findAllNavigableSections();
     if (navigableSections.length > 0) {
-      activeSection = navigableSections[0];
+      activeSection = activateTopSection(navigableSections, main);
     }
   };
-
   const initListeners = function() {
     window.addEventListener('scroll', handleScroll);
     navBarList.addEventListener('click', handleNavLinkClicked);
@@ -56,7 +68,7 @@ const fillNavBar = function() {
     const item = document.createElement('LI');
     const linkText = section.dataset.nav;
     const linkHref = section.id;
-    item.innerHTML =
+    item.innerHTML = //
       `<a class="menu__link" href="#${linkHref}">${linkText}</span>`;
     return item;
   };
@@ -69,29 +81,32 @@ const fillNavBar = function() {
 };
 
 // Add class 'active' to section when near top of viewport
-const activateSection = function() {
+const activateTopVisibleSection = function() {
+  const findTopVisibleSection = function() {
   /* Element is visible if either top or bottom has
    * a positive offset from the viewport's upper edge
    * and is not covered by the fixed nav bar. */
-  const isVisible = function(element) {
-    const bounds = element.getBoundingClientRect();
-    const navBarHeight = navBarList.getBoundingClientRect().height;
-    return bounds.top - navBarHeight >= 0 || bounds.bottom - navBarHeight >= 0;
-  };
-  const findFirstVisibleSection = function() {
+    const isVisible = function(element) {
+      const bounds = element.getBoundingClientRect();
+      const navBarHeight = navBarList.getBoundingClientRect().height;
+      return bounds.top - navBarHeight >= 0 ||
+             bounds.bottom - navBarHeight >= 0
+      ;
+    };
+
     return navigableSections.find(isVisible);
   };
+  const toggleActiveStyle = function(section) {
+    section && section.classList && section.classList.toggle('active');
+  };
 
-  const firstVisibleSection = findFirstVisibleSection();
-  if (!firstVisibleSection) {
-    return; // no visible containers, nothing to activate
+  const topVisibleSection = findTopVisibleSection();
+  if (topVisibleSection !== activeSection) {
+    // Note(!): Hiding the container would not speed-up things here.
+    [activeSection, topVisibleSection].forEach(toggleActiveStyle);
+    activeSection = topVisibleSection;
   }
-  if (firstVisibleSection !== activeSection) {
-    [activeSection, firstVisibleSection].forEach((section) =>
-      section.classList.toggle('active')
-    );
-    activeSection = firstVisibleSection;
-  }
+
   // Delete the scroll timer so that
   // the next scroll event will not attempt to clear it
   scrollTimer = null;
@@ -139,7 +154,7 @@ const handleScroll = function() {
   }
   // ... and schedule the current one.
   // Will activate, if no more scroll events arrive.
-  scrollTimer = setTimeout(activateSection, 100);
+  scrollTimer = setTimeout(activateTopVisibleSection, 100);
 };
 
 // Defer initializing and running this script until DOM is ready.
