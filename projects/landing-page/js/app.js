@@ -68,7 +68,8 @@ const fillNavBar = function() {
     const item = document.createElement('LI');
     const linkText = section.dataset.nav;
     const linkHref = section.id;
-    item.innerHTML = //
+    item.innerHTML =
+      //
       `<a class="menu__link" href="#${linkHref}">${linkText}</span>`;
     return item;
   };
@@ -135,8 +136,11 @@ const scrollToAnchor = function(href) {
   const targetId = href.slice(1);
   const target = document.getElementById(targetId);
   const targetY = computeTargetPageY(target);
-  // Unfortunately, smooth scrolling is not really supported
-  window.scroll(0, targetY);
+  // Unfortunately, smooth scrolling is not supported natively
+  // on Safari for MacOs and mobile. Using a polyfill to add
+  // this support.
+  // Deliberately not using 'scrollIntoView' for lack of accuracy.
+  window.scroll({top: targetY, left: 0, behavior: 'smooth'});
 };
 /*      End Main Functions      */
 
