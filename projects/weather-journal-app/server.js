@@ -1,11 +1,12 @@
 // Setup empty JS object to act as endpoint for all routes
 projectData = {};
 
-// Express for routing
+// Express to run server and routes
 const express = require('express');
 const app = express();
 
-// Body-parser for message parsing
+/* Dependencies */
+// Body parser as middleware
 const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
@@ -17,11 +18,17 @@ app.use(cors());
 // Initialize the main project folder
 app.use(express.static('website'));
 
-// Setup Server
+/* Routing */
+// Initialize all route with a callback function
 app.get('/hello', function(req, res) {
   res.send('Hello user :-)');
 });
 
+// Callback function to complete GET '/all'
+
+// Post Route
+
+/* Spin up the server with an appropriate callback */
 const port = 3030;
 app.listen(port, function() {
   console.log(`Weather journal app is listening on port ${port}!`);
