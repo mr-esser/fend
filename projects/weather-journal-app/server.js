@@ -1,5 +1,7 @@
-// Setup empty JS object to act as endpoint for all routes
-projectData = {};
+/* Setup empty JS object to act as endpoint for all routes */
+// Will store only the latest combined data received from a client.
+// This is all the client will show in its UI, anyway.
+let projectData = {};
 
 // Express to run server and routes
 const express = require('express');
@@ -19,17 +21,26 @@ app.use(cors());
 app.use(express.static('website'));
 
 /* Routing */
-// Initialize all route with a callback function
-app.get('/hello', function(req, res) {
-  res.send('Hello user :-)');
+// Initialize all route with a callback function.
+// Used for debugging purposes.
+app.all('/all', function(req, res, next) {
+  console.log(`${req.method} ${req.path}\n ${JSON.stringify(req.body)}`);
+  next();
 });
 
 // Callback function to complete GET '/all'
+app.get('/all', function(req, res) {
+  res.json(projectData);
+});
 
-// Post Route
+// POST route to store an entry
+app.post('/all', function(req, res) {
+  projectData = req.body;
+  res.status(201).json(projectData);
+});
 
 /* Spin up the server with an appropriate callback */
 const port = 3030;
 app.listen(port, function() {
-  console.log(`Weather journal app is listening on port ${port}!`);
+  console.log(`Server is listening on port ${port}!`);
 });
