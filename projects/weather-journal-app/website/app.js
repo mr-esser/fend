@@ -11,11 +11,11 @@ const d = new Date();
 const newDate = d.getMonth() + '.' + d.getDate() + '.' + d.getFullYear();
 
 /* Helper functions */
-const getWeatherServiceUrl = function(zipCode, units) {
+const getWeatherServiceUrl = function(zipCode, units='metric') {
   return `http://api.openweathermap.org/data/2.5/weather?zip=${zipCode}&units=${units}&appid=${WEATHER_API_KEY}`;
 };
 
-const getJournalServiceUrl= function(route) {
+const getJournalServiceUrl= function(route='all') {
   return `http://localhost:3030/${route}`;
 };
 
@@ -59,35 +59,74 @@ const getWeatherData = async function(zipAndCountryCode, units) {
 };
 
 /* Function to POST project data */
-const postProjectData = async function(url, projectData={}) {
+const postJournalData = async function(url='', journalData={}) {
   const response = await fetch(url, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify(projectData)
+    body: JSON.stringify(journalData)
   });
   return response.json();
 };
 
 /* Function to GET project data */
-const getProjectData = async function(url) {
+const getJournalData = async function(url='') {
   const response = await fetch(url);
   return response.json();
 };
 
+/* Named function called by event listener */
+const handleGenerate = async function handleGenerate(event) {
+  // Read zip code
+  const zipInput = document.querySelector('#zip');
+  const zipCode = zipInput.value.trim();
+  console.log('Zip is: ' + zipCode);
+  // TODO: Throw error if not present and formatted right
+
+  // Read feelings
+  const feelingsTextArea = document.querySelector('#feelings');
+  const feelingsText = feelingsTextArea.value.trim();
+  console.log('Feelings is: ' + feelingsText);
+  // TODO: Throw error if not present and formatted right
+
+  // GET weather data
+  const weatherData = await getWeatherData(zipCode);
+  console.log('Weather: ' + weatherData);
+  const temperature = weatherData.main.temp;
+  console.log('Temp: ' + temperature);
+  // TODO: Throw if temperature not present
+  // build projectData (date, weather, feelings)
+  const accumulatedData = {
+    date: newDate,
+    temp: temperature,
+    content: feelingsText
+  };
+  // then POST to Journal App
+  await postJournalData(getJournalServiceUrl(), accumulatedData);
+  // TODO: Catch possible error and rethrow
+  // then GET From Journal App
+  const journalData = await getJournalData(getJournalServiceUrl());
+  // TODO: Catch possible error
+
+  // then update the UI (hide outer container + set innerHtml)
+  const container = document.querySelector('#entryHolder');
+  // TODO: Avoid several reflows. Check if really faster this way.
+  container.style = 'display: none;';
+  const divDate = container.querySelector('#date');
+  divDate.innerHTML = journalData.date;
+  const divTemp = container.querySelector('#temp');
+  divTemp.innerHTML = journalData.temp;
+  const divContent = container.querySelector('#content');
+  divContent.innerHTML = journalData.content;
+  container.style = '';
+
+  // TODO: Mighty error catch block
+};
+
 // Event listener to add function to existing HTML DOM element
+window.addEventListener('DOMContentLoaded', () => {
+  const generateButton = document.querySelector('#generate');
+  generateButton.addEventListener('click', handleGenerate);
+});
 
-/* Function called by event listener */
-
-// TODO: Remove later. Tests the external API and cache.
-getWeatherData('52152,de', 'metric');
-setTimeout(() => getWeatherData('52152,de', 'metric')
-    .then((data) => console.log(JSON.stringify(data))), 1000);
-
-// TODO: Remove later. Tests the server routes.
-getProjectData(getJournalServiceUrl('all')).then((data) => {
-  console.log(data); return data;
-}).then((data) => postProjectData(getJournalServiceUrl('all'), {name: 'sample'})
-).then( (data) => getProjectData(getJournalServiceUrl('all'))
-).then((projectData) => console.log(projectData));
