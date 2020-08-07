@@ -23,8 +23,8 @@ app.use(express.static('website'));
 /* Routing */
 // Initialize all route with a callback function.
 // Used for debugging purposes.
-app.all('/all', function(req, res, next) {
-  console.log(`${req.method} ${req.path}\n ${JSON.stringify(req.body)}`);
+app.all('*', function(req, res, next) {
+  console.log(`${req.method} ${req.path} req:${JSON.stringify(req.body)}`);
   next();
 });
 
@@ -40,7 +40,7 @@ app.post('/all', function(req, res) {
 });
 
 /* Spin up the server with an appropriate callback */
-const port = 3030;
-app.listen(port, function() {
-  console.log(`Server is listening on port ${port}!`);
+const PORT = 3030;
+app.listen(PORT, function() {
+  console.log(`Server is listening on port ${PORT}!`);
 });
