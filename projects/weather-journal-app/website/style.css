@@ -22,27 +22,38 @@ body{
 
 .entry{
     background: rgba(59, 74, 107, .4);
+    font-size: 27px;
 }
 
-/* #entryHolder{
-
+#entryHolder{
+  font-size: 20px;
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  padding: 0 2px;
 }
+
 
 #date{
+  margin-left: 15px;
+}
 
+#location{
+  margin-left: 30px;
 }
 
 #temp{
-
+  margin-left: 30px;
 }
 
 #content{
-
+  margin-left: 30px;
+  justify-self: stretch;
 }
-
 .headline {
-
+  font-size: 54px;
 }
+/*
 .title{
 
 } */
