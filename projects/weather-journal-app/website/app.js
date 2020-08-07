@@ -127,6 +127,8 @@ const handleGenerate = async function handleGenerate(event) {
 // Event listener to add function to existing HTML DOM element
 window.addEventListener('DOMContentLoaded', () => {
   const generateButton = document.querySelector('#generate');
+  // Note: Button does not generate a form submit event here
+  // because there is no such form in the HTML.
   generateButton.addEventListener('click', handleGenerate);
 });
 
