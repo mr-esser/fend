@@ -3,6 +3,8 @@
 const WEATHER_API_KEY = 'c6fc4d916e42eed6b3cc6fa9dd279427';
 // Pause in between identical weather map API requests
 const REQUEST_PAUSE = 12 * 60 * 1000; // 12 minutes
+// Unit system used in weather map API requests
+const UNITS = 'metric';
 // Cache to help avoid request rejections due to excessive request rate
 const weatherDataCache = new Map();
 
@@ -11,11 +13,11 @@ const d = new Date();
 const newDate = d.getMonth() + '.' + d.getDate() + '.' + d.getFullYear();
 
 /* Helper functions */
-const getWeatherServiceUrl = function(zipCode, units='metric') {
-  return `http://api.openweathermap.org/data/2.5/weather?zip=${zipCode}&units=${units}&appid=${WEATHER_API_KEY}`;
+const getWeatherServiceUrl = function(zipAndCountryCode) {
+  return `http://api.openweathermap.org/data/2.5/weather?zip=${zipAndCountryCode}&units=${UNITS}&appid=${WEATHER_API_KEY}`;
 };
 
-const getJournalServiceUrl= function(route='all') {
+const getJournalServiceUrl = function(route = 'all') {
   return `http://localhost:3030/${route}`;
 };
 
@@ -43,6 +45,7 @@ const cacheWeatherData = function(zipAndCountryCode, weatherData) {
 
 const fetchWeatherDataFromService = async function(zipAndCountryCode, units) {
   const serviceUrl = getWeatherServiceUrl(zipAndCountryCode, units);
+  // Note(!): fetch will only reject on network errors!
   const response = await fetch(serviceUrl);
   return response.json();
 };
@@ -51,7 +54,6 @@ const fetchWeatherDataFromService = async function(zipAndCountryCode, units) {
 const getWeatherData = async function(zipAndCountryCode, units) {
   let data = getWeatherDataFromCache(zipAndCountryCode);
   if (!data) {
-    // TODO: Set-up appropriate error handling, here!
     data = await fetchWeatherDataFromService(zipAndCountryCode, units);
     cacheWeatherData(zipAndCountryCode, data);
   }
@@ -59,55 +61,76 @@ const getWeatherData = async function(zipAndCountryCode, units) {
 };
 
 /* Function to POST project data */
-const postJournalData = async function(url='', journalData={}) {
+const postJournalData = async function(url = '', journalData = {}) {
+  // Note(!): fetch will only reject on network errors!
   const response = await fetch(url, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     },
-    body: JSON.stringify(journalData)
+    body: JSON.stringify(journalData),
   });
   return response.json();
 };
 
 /* Function to GET project data */
-const getJournalData = async function(url='') {
+const getJournalData = async function(url = '') {
+  // Note(!): fetch will only reject on network errors!
   const response = await fetch(url);
   return response.json();
 };
 
 /* Named function called by event listener */
 const handleGenerate = async function handleGenerate(event) {
-  // Read zip code
+  // Read zip code. Accepting anything here.
   const zipInput = document.querySelector('#zip');
   const zipCode = zipInput.value.trim();
-  console.log('Zip is: ' + zipCode);
-  // TODO: Throw error if not present and formatted right
 
-  // Read feelings
+  // Read feelings. Accepting anything here.
   const feelingsTextArea = document.querySelector('#feelings');
   const feelingsText = feelingsTextArea.value.trim();
-  console.log('Feelings is: ' + feelingsText);
-  // TODO: Throw error if not present and formatted right
 
   // GET weather data
   const weatherData = await getWeatherData(zipCode);
-  console.log('Weather: ' + weatherData);
-  const temperature = weatherData.main.temp;
+  console.log('Weather service response is: ' + weatherData.cod);
+  // TODO: Throw exception if weather data is not ok: cod !== 200
+
+  // Extract temperature. Unit is hard-coded. See constant UNITS.
+  // Try-catch just in case that retrieved data is incomplete.
+  let temperature;
+  try {
+    temperature = `${weatherData.main.temp} °C`;
+  } catch (e) {
+    temperature = 'unavailable';
+  }
   console.log('Temp: ' + temperature);
-  // TODO: Throw if temperature not present
-  // build projectData (date, weather, feelings)
+
+  // Extract location.
+  // Try-catch just in case that retrieved data is incomplete.
+  let location;
+  try {
+    location = `${weatherData.name}, ${weatherData.sys.country}`;
+  } catch (e) {
+    location = 'unavailable';
+  }
+  console.log('Location: ' + location);
+
+  // TODO: Build accumulated data when network errors occurred.
+  // Build journal data (date, location, temperature, feelings)
   const accumulatedData = {
     date: newDate,
     temp: temperature,
-    content: feelingsText
+    location: location,
+    content: feelingsText,
   };
+
   // then POST to Journal App
   await postJournalData(getJournalServiceUrl(), accumulatedData);
-  // TODO: Catch possible error and rethrow
+  // TODO: May throw error when server is down. Propagate.
+
   // then GET From Journal App
   const journalData = await getJournalData(getJournalServiceUrl());
-  // TODO: Catch possible error
+  // TODO: May throw error when server is down. Propagate.
 
   // then update the UI (hide outer container + set innerHtml)
   const container = document.querySelector('#entryHolder');
@@ -115,13 +138,16 @@ const handleGenerate = async function handleGenerate(event) {
   container.style = 'display: none;';
   const divDate = container.querySelector('#date');
   divDate.innerHTML = journalData.date;
+  const divLocation = container.querySelector('#location');
+  divLocation.innerHTML = journalData.location;
   const divTemp = container.querySelector('#temp');
   divTemp.innerHTML = journalData.temp;
   const divContent = container.querySelector('#content');
   divContent.innerHTML = journalData.content;
   container.style = '';
 
-  // TODO: Mighty error catch block
+  // TODO: Mighty error catch block that will update most recent entry on
+  // unrecoverable networking errors; i.e.: fetch rejected and threw.
 };
 
 // Event listener to add function to existing HTML DOM element
@@ -131,4 +157,3 @@ window.addEventListener('DOMContentLoaded', () => {
   // because there is no such form in the HTML.
   generateButton.addEventListener('click', handleGenerate);
 });
-
