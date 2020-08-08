@@ -1,18 +1,21 @@
 /* Global Variables */
 // Personal API Key for OpenWeatherMap API
 const WEATHER_API_KEY = 'c6fc4d916e42eed6b3cc6fa9dd279427';
-// Pause in between identical weather map API requests
+// Pause enforced in-between identical weather map API requests
 const REQUEST_PAUSE = 12 * 60 * 1000; // 12 minutes
 // Unit system used in weather map API requests
 const UNITS = 'metric';
 // Cache to help avoid request rejections due to excessive request rate
 const weatherDataCache = new Map();
 
-// Create a new date instance dynamically with JS
-const d = new Date();
-const newDate = d.getMonth() + '.' + d.getDate() + '.' + d.getFullYear();
 
 /* Helper functions */
+// Today's date printed in an unambiguous format (e.g.: 'Thu Jan 01 1970').
+// App could be up for a long time, so not making this a constant.
+function createDate() {
+  return new Date().toDateString();
+}
+
 const getWeatherServiceUrl = function(zipAndCountryCode) {
   return `http://api.openweathermap.org/data/2.5/weather?zip=${zipAndCountryCode}&units=${UNITS}&appid=${WEATHER_API_KEY}`;
 };
@@ -118,7 +121,7 @@ const handleGenerate = async function handleGenerate(event) {
   // TODO: Build accumulated data when network errors occurred.
   // Build journal data (date, location, temperature, feelings)
   const accumulatedData = {
-    date: newDate,
+    date: createDate(),
     temp: temperature,
     location: location,
     content: feelingsText,
@@ -157,3 +160,4 @@ window.addEventListener('DOMContentLoaded', () => {
   // because there is no such form in the HTML.
   generateButton.addEventListener('click', handleGenerate);
 });
+
