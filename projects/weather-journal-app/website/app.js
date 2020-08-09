@@ -8,6 +8,10 @@ const UNITS = 'metric';
 // Cache to help avoid request rejections due to excessive request rate
 const weatherDataCache = new Map();
 
+// Journal server info
+const SERVER = 'localhost';
+const PORT = 3030;
+
 /* **** Begin public helper functions **** */
 // Today's date printed in an unambiguous format (e.g.: 'Thu Jan 01 1970').
 // App could be up for a long time, so not making this a constant.
@@ -20,7 +24,7 @@ const getWeatherServiceUrl = function(zipAndCountryCode) {
 };
 
 const getJournalServiceUrl = function(route = 'all') {
-  return `http://localhost:3030/${route}`;
+  return `http://${SERVER}:${PORT}/${route}`;
 };
 
 /* Will not validate the input! */
