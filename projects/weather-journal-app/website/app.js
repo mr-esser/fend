@@ -33,7 +33,12 @@ const getInputText = function(selector) {
 };
 
 /* Update the most recent entry in the UI */
-const updateUI = function({date='', location='', temperature='', content=''}) {
+const updateUI = function({
+  date = '',
+  location = '',
+  temperature = '',
+  content = '',
+}) {
   const container = document.querySelector('#entryHolder');
   // TODO: Avoid several reflows. Check if really faster this way.
   container.style = 'display: none;';
@@ -147,8 +152,13 @@ const handleGenerate = async function handleGenerate(event) {
 
 // Event listener to add function to existing 'Generate' button.
 window.addEventListener('DOMContentLoaded', () => {
+  // Note(!) Button will not generate a 'submit' event
+  // because it is not tied to a form.
   const generateButton = document.querySelector('#generate');
-  // Note(!) Button does not generate 'submit' event here
-  // because there is no form involved.
   generateButton.addEventListener('click', handleGenerate);
+  // Try to load data from the server on startup.
+  // There may already be some available.
+  getJournalData(getJournalServiceUrl())
+      .then((data) => updateUI(data))
+      .catch((error) => console.error(error));
 });
