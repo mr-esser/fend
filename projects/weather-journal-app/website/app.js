@@ -40,7 +40,8 @@ const updateUI = function({
   content = '',
 }) {
   const container = document.querySelector('#entryHolder');
-  // TODO: Avoid several reflows. Check if really faster this way.
+  // Trying to avoid several consecutive reflows/repaints here.
+  // Does not make much of a difference, though.
   container.style = 'display: none;';
   container.querySelector('#date').innerHTML = date;
   container.querySelector('#location').innerHTML = location;
