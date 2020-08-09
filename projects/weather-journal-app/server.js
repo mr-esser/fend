@@ -1,5 +1,5 @@
 /* Setup empty JS object to act as endpoint for all routes */
-// Will store only the latest combined data received from a client.
+// Will store only the latest journal data received from a client.
 // This is all the client will show in its UI, anyway.
 let projectData = {};
 
@@ -34,6 +34,9 @@ app.get('/all', function(req, res) {
 });
 
 // POST route to store an entry
+// Note(!): Deliberately not performing any validation here.
+// App serves as a general data store.
+// Data validation is the client's responsibility.
 app.post('/all', function(req, res) {
   projectData = req.body;
   res.status(201).json(projectData);
