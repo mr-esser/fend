@@ -12,7 +12,7 @@ const weatherDataCache = new Map();
 const SERVER = 'localhost';
 const PORT = 3030;
 
-/* **** Begin public helper functions **** */
+/* Public helper functions */
 // Today's date printed in an unambiguous format (e.g.: 'Thu Jan 01 1970').
 // App could be up for a long time, so not making this a constant.
 const createDisplayDate = function() {
@@ -45,7 +45,7 @@ const updateUI = function({
 }) {
   const container = document.querySelector('#entryHolder');
   // Trying to avoid several consecutive reflows/repaints here.
-  // Does not make much of a difference, though.
+  // Does not seem to be worth the effort, though.
   container.style = 'display: none;';
   container.querySelector('#date').innerHTML = date;
   container.querySelector('#location').innerHTML = location;
@@ -53,7 +53,8 @@ const updateUI = function({
   container.querySelector('#content').innerHTML = content;
   container.style = '';
 };
-/* **** End public helper functions **** */
+
+/* Main functions */
 
 /* Function to GET weather data from third-party service.
  * Will attempt to cache requests. */
@@ -150,7 +151,7 @@ const handleGenerate = async function handleGenerate(event) {
     // Very lazy!! Should rather use a dedicated <div>
     // to display the error and hide the rest.
     updateUI({
-      date: 'Ooops. Looks like the server is down. Please, try again later.',
+      date: 'Ooops. Looks like the service is down. Please, try again later.',
     });
   }
 };
