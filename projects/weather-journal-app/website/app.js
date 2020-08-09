@@ -8,7 +8,7 @@ const UNITS = 'metric';
 // Cache to help avoid request rejections due to excessive request rate
 const weatherDataCache = new Map();
 
-/* **** Begin general helper functions **** */
+/* **** Begin public helper functions **** */
 // Today's date printed in an unambiguous format (e.g.: 'Thu Jan 01 1970').
 // App could be up for a long time, so not making this a constant.
 const createDisplayDate = function() {
@@ -33,7 +33,7 @@ const getInputText = function(selector) {
 };
 
 /* Update the most recent entry in the UI */
-const updateUI = function(date='', location='', temperature='', content='') {
+const updateUI = function({date='', location='', temperature='', content=''}) {
   const container = document.querySelector('#entryHolder');
   // TODO: Avoid several reflows. Check if really faster this way.
   container.style = 'display: none;';
@@ -43,7 +43,7 @@ const updateUI = function(date='', location='', temperature='', content='') {
   container.querySelector('#content').innerHTML = content;
   container.style = '';
 };
-/* **** End general helper functions **** */
+/* **** End public helper functions **** */
 
 /* Function to GET weather data from third-party service.
  * Will attempt to cache requests. */
@@ -114,33 +114,34 @@ const handleGenerate = async function handleGenerate(event) {
     };
     try {
       const weatherData = await getWeatherData(getInputText('#zip'));
-      console.log('Weather service response is: ' + weatherData.cod);
       // Temperature unit is hard-coded. See constant UNITS.
       journalData.temperature = `${weatherData.main.temp} °C`;
       journalData.location = `${weatherData.name}, ${weatherData.sys.country}`;
     } catch (error) {
       // Data is incomplete, but it can still be posted and displayed.
-      // So log and then go on.
-      console.log(error);
+      // So, log and then go on.
+      console.info(error);
     }
     return journalData;
   };
 
   const synchronizeWithServer = async function(journalData) {
     await postJournalData(getJournalServiceUrl(), journalData);
-    return await getJournalData(getJournalServiceUrl());
+    return getJournalData(getJournalServiceUrl());
   };
 
   try {
-    const journalData = buildJournalData();
-    const serverData = synchronizeWithServer(journalData);
-    updateUI(serverData.date, serverData.location, serverData.temperature,
-        serverData.content);
-  // unrecoverable networking errors; i.e.: fetch rejected and threw.
-  } catch (serverError) {
-    updateUI('Something went terribly wrong. Please, try again later.'
-        , JSON.stringify(serverError)
-    );
+    const journalData = await buildJournalData();
+    const serverData = await synchronizeWithServer(journalData);
+    updateUI(serverData);
+  } catch (networkError) {
+    // Probably unrecoverable networking error ,i.e.: fetch rejected and threw
+    console.error(networkError);
+    // Very lazy!! Should rather use a dedicated <div>
+    // to display the error and hide the rest.
+    updateUI({
+      date: 'Ooops. Looks like the server is down. Please, try again later.',
+    });
   }
 };
 
