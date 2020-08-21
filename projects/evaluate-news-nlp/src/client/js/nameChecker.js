@@ -7,4 +7,8 @@ function checkForName(inputText) {
   }
 }
 
-export {checkForName};
+function onBlur() {
+  console.log('::: Blurring :::');
+}
+
+export {checkForName, onBlur};
