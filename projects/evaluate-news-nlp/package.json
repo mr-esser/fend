@@ -19,9 +19,7 @@
     "directory": "/projects/evaluate-news-nlp"
   },
   "dependencies": {
-    "express": "^4.17.1",
-    "webpack": "^4.35.3",
-    "webpack-cli": "^3.3.5"
+    "express": "^4.17.1"
   },
   "devDependencies": {
     "@babel/core": "^7.5.4",
@@ -32,6 +30,8 @@
     "eslint-config-google": "^0.14.0",
     "eslint-loader": "^4.0.2",
     "html-webpack-plugin": "^3.2.0",
+    "webpack": "^4.35.3",
+    "webpack-cli": "^3.3.5",
     "webpack-dev-server": "^3.11.0"
   }
 }
