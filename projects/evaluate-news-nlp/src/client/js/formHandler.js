@@ -2,16 +2,24 @@ import {checkForName} from './nameChecker';
 
 function handleSubmit(event) {
   event.preventDefault();
+  console.log('::: Form Submitted :::');
 
   // check what text was put into the form field
-  const formText = document.getElementById('name').value;
-  checkForName(formText);
+  const url = document.getElementById('name').value;
+  checkForName(url);
+  console.log(`::: URL submitted: ${url}`);
 
-  console.log('::: Form Submitted :::');
-  fetch('http://localhost:8080/test')
+  fetch('http://localhost:8080/test', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json;charset=utf-8',
+      'Content-Type': 'application/json;charset=utf-8',
+    },
+    body: JSON.stringify({url: url}),
+  })
       .then((res) => res.json())
       .then(function(res) {
-        document.getElementById('results').innerHTML = res.message;
+        document.getElementById('results').innerHTML = JSON.stringify(res);
       });
 }
 
