@@ -3,7 +3,7 @@ function checkForName(inputText) {
   const names = ['Picard', 'Janeway', 'Kirk', 'Archer', 'Georgiou'];
 
   if (names.includes(inputText)) {
-    alert('Welcome, Captain!');
+    console.log('Welcome, Captain!');
   }
 }
 
