@@ -46,6 +46,7 @@ app.post('/test', function(req, res) {
           polarity: json.score_tag,
           subjectivity: json.subjectivity,
           irony: json.irony,
+          confidence: json.confidence,
         };
         console.debug(responseSummary);
         res.status(200).send(responseSummary);
