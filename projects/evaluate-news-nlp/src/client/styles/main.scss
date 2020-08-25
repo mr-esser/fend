@@ -1,0 +1,15 @@
+#results {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: auto auto;
+}
+
+.thead {
+  font-family: sans-serif; 
+  background-color: #EFEFEF;
+}
+
+.box {
+  border: 1px solid #545454; /* TODO: use variable */
+  padding: 5px;
+}

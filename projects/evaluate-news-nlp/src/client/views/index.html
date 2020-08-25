@@ -1,38 +1,87 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-    <head>
-        <meta charset="utf-8">
-        <title>Test</title>
-    </head>
+  <head>
+    <meta charset="utf-8" />
+    <title>Document Sentiment Analysis</title>
+  </head>
 
-    <body>
+  <body>
+    <header>
+      <div class="header-item">
+        Logo
+      </div>
+      <div class="header-item">
+        Navigation
+      </div>
+    </header>
 
-        <header>
-            <div class="">
-                Logo
-            </div>
-            <div class="">
-                navigation
-            </div>
-        </header>
+    <main>
+      <section>
+        <form class="" onsubmit="return Client.handleSubmit(event)">
+          <input
+            id="name"
+            type="text"
+            name="input"
+            value=""
+            placeholder="Target URL"
+            onblur="Client.onBlur()"
+          />
+          <input
+            type="submit"
+            name="trigger"
+            value="Analyse"
+            onclick="return Client.handleSubmit(event)"
+            onsubmit="return Client.handleSubmit(event)"
+          />
+        </form>
+      </section>
 
-        <main>
-            <section>
-                <form class="" onsubmit="return Client.handleSubmit(event)">
-                    <input id="name" type="text" name="input" value="" onblur="Client.onBlur()" placeholder="Name">
-                    <input type="submit" name="" value="submit" onclick="return Client.handleSubmit(event)" onsubmit="return Client.handleSubmit(event)">
-                </form>
-            <section>
+      <section>
+        <h1>Analysis Results</h1>
+        <div id="results" class="">
+          <div class="box thead">URL</div>
+          <div class="box thead">
+            <span
+              class="tooltip tooltip-top"
+              data-tooltip="P+: strong positive
+            P: positive
+            NEU: neutral
+            N: negative
+            N+: strong negative
+            NONE: without sentiment"
+              >Polarity</span
+            >
+          </div>
+          <div class="box thead">
+            <span
+              class="tooltip tooltip-top"
+              data-tooltip="OBJECTIVE: Text is without subjectivity marks.
+            SUBJECTIVE: Text has subjective marks."
+              >Subjectivity</span
+            >
+          </div>
+          <div class="box thead">
+            <span class="tooltip tooltip-top" data-tooltip="NONIRONIC: Text is without ironic marks.
+            IRONIC: Text has ironic marks.">Irony</span>
+          </div>
+          <div class="box thead">
+            <span class="tooltip tooltip-top" data-tooltip="Confidence associated with the sentiment analysis performed on the text."
+              >Confidence</span
+            >
+          </div>
 
-            <section>
-                <strong>Form Results:</strong>
-                <div id="results"></div>
-            </section>
-        </main>
+          <div id="targetUrl" class="box data">
+          </div>
+          <div id="polarity" class="box data"></div>
+          <div id="subjectivity" class="box data"></div>
+          <div id="irony" class="box data"></div>
+          <div id="confidence" class="box data"></div>
+        </div>
+      </section>
+    </main>
 
-        <footer>
-            <p>This is a footer</p>
-        </footer>
-
-    </body>
+    <footer>
+      <p>This is a footer</p>
+    </footer>
+  </body>
 </html>

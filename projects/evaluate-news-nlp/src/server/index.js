@@ -42,7 +42,7 @@ app.post('/test', function(req, res) {
   apiResponse.then((data) => data.json())
       .then((json) => {
         const responseSummary = {
-          resource: req.body.url,
+          targetUrl: req.body.url,
           polarity: json.score_tag,
           subjectivity: json.subjectivity,
           irony: json.irony,

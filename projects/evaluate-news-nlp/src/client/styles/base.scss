@@ -1,14 +1,45 @@
 body {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
 main {
-    flex: 2;
+  flex: 2;
 }
 
 section {
-    max-width: 800px;
-    margin: 50px auto;
+  max-width: 800px;
+  margin: 50px auto;
+}
+
+h1 {
+  margin: 10px 0;
+  font-family: sans-serif;
+  font-weight: bold;
+}
+/* Thanks to Andor Nagy from webdesignerhut.com for this neat trick.
+ * See: https://webdesignerhut.com/pure-css-tooltips-with-html5-data-attribute/
+ */
+.tooltip {
+  cursor: help;
+}
+.tooltip:hover {
+  /* Note(!): Position must not be default ('static') for this to work. */
+  position: relative;
+}
+.tooltip-top[data-tooltip]:hover:after {
+  content: attr(data-tooltip);
+  padding: 4px 8px;
+  position: absolute;
+  left: 0;
+  /* On top of styled element */
+  bottom: 100%;
+  white-space: pre-line;
+  /* In front of styled element */
+  z-index: 20;
+  min-width: 180px;
+
+  background-color: #000;
+  color: #fff;
 }
