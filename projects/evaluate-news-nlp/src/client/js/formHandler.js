@@ -11,7 +11,7 @@ function handleSubmit(event) {
 
   // TODO: This can be a real constant set on load!
   const resultsDiv = document.getElementById('results');
-  resultsDiv.style = 'display: none;';
+  resultsDiv.classList.remove('result-grid');
   fetch('http://localhost:8080/test', {
     method: 'POST',
     headers: {
@@ -36,7 +36,7 @@ function updateUI(containerDiv, result) {
   divIrony.innerHTML = result.irony;
   const divConfidence = containerDiv.querySelector('#confidence');
   divConfidence.innerHTML = result.confidence + '%';
-  containerDiv.style = '';
+  containerDiv.classList.add('result-grid');
 }
 
 export {handleSubmit};
