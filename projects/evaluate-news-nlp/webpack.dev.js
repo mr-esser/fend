@@ -1,3 +1,4 @@
+const path = require('path');
 const HtmlWebPackPlugin = require('html-webpack-plugin');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 
@@ -19,7 +20,7 @@ module.exports = {
         loader: ['babel-loader', 'eslint-loader'],
       },
       {
-        test: /\.scss$/,
+        test: /\.[s]?css$/,
         use: ['style-loader', 'css-loader', 'sass-loader'],
       },
     ],
@@ -39,4 +40,9 @@ module.exports = {
       protectWebpackAssets: false,
     }),
   ],
+  resolve: {
+    alias: {
+      'modules': path.resolve(__dirname, 'node_modules/'),
+    },
+  },
 };

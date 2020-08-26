@@ -10,5 +10,5 @@ import './styles/header.scss';
 import './styles/form.scss';
 import './styles/main.scss';
 import './styles/footer.scss';
-
+import 'modules/spinkit/spinkit.css';
 export {handleSubmit, checkForName, onBlur};

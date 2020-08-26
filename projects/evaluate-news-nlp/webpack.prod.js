@@ -1,3 +1,4 @@
+const path = require('path');
 const HtmlWebPackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
@@ -21,7 +22,7 @@ module.exports = {
         loader: 'babel-loader',
       },
       {
-        test: /\.scss$/,
+        test: /\.[s]?css$/,
         use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
       },
     ],
@@ -33,4 +34,9 @@ module.exports = {
     }),
     new MiniCssExtractPlugin({filename: '[name].css'}),
   ],
+  resolve: {
+    alias: {
+      'modules': path.resolve(__dirname, 'node_modules/'),
+    },
+  },
 };

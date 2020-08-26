@@ -12,6 +12,9 @@ function handleSubmit(event) {
   // TODO: This can be a real constant set on load!
   const resultsDiv = document.getElementById('results');
   resultsDiv.classList.remove('result-grid');
+  const spinnerDiv = document.getElementById('spinner');
+  spinnerDiv.classList.add('sk-flow');
+
   fetch('http://localhost:8080/test', {
     method: 'POST',
     headers: {
@@ -22,10 +25,12 @@ function handleSubmit(event) {
   })
       .then((res) => res.json())
       .then((resultObj) =>
-        updateUI(resultsDiv, resultObj));
+        updateUI(resultsDiv, spinnerDiv, resultObj));
+  // TODO: Add decent error handling and update UI accordingly
 }
 
-function updateUI(containerDiv, result) {
+function updateUI(containerDiv, spinnerDiv, result) {
+  spinnerDiv.classList.remove('sk-flow');
   const divUrl = containerDiv.querySelector('#targetUrl');
   divUrl.innerHTML = `<a href="${result.targetUrl}">${result.targetUrl}</a>`;
   const divPolarity = containerDiv.querySelector('#polarity');
