@@ -22,8 +22,16 @@ module.exports = {
         loader: 'babel-loader',
       },
       {
-        test: /\.[s]?css$/,
+        test: /\.s?css$/,
         use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
+      },
+      {
+        test: /\.(png|svg|jpe?g|gif)$/i,
+        use: ['file-loader'],
+      },
+      {
+        test: /\.html$/i,
+        use: ['html-loader'],
       },
     ],
   },
@@ -36,7 +44,7 @@ module.exports = {
   ],
   resolve: {
     alias: {
-      'modules': path.resolve(__dirname, 'node_modules/'),
+      'modules': path.resolve(__dirname, 'node_modules'),
     },
   },
 };
