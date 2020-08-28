@@ -2,6 +2,8 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  font-family: sans-serif;
+  background-color: ghostwhite ;
 }
 
 main {
@@ -15,8 +17,8 @@ section {
 
 h1 {
   margin: 10px 0;
-  font-family: sans-serif;
-  font-weight: bold;
+  font-size: 20px;
+  color: #1A3B64;
 }
 /* Thanks to Andor Nagy from webdesignerhut.com for this neat trick.
  * See: https://webdesignerhut.com/pure-css-tooltips-with-html5-data-attribute/
@@ -24,10 +26,12 @@ h1 {
 .tooltip {
   cursor: help;
 }
+
 .tooltip:hover {
   /* Note(!): Position must not be default ('static') for this to work. */
   position: relative;
 }
+
 .tooltip-top[data-tooltip]:hover:after {
   content: attr(data-tooltip);
   padding: 4px 8px;

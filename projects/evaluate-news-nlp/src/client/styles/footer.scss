@@ -1,0 +1,16 @@
+footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 6vh;
+  background: #1F436F;
+  background: -webkit-linear-gradient(bottom, #1F436F, #87B7FB);
+  background: -moz-linear-gradient(bottom, #1F436F, #87B7FB);
+  background: linear-gradient(to top, #1F436F, #87B7FB);
+  a, a:visited {
+  text-decoration: none;
+  font-family: sans-serif;
+  color: ghostwhite;
+  }
+
+}

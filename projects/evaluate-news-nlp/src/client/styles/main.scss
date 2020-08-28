@@ -6,10 +6,15 @@
 
 .thead {
   font-family: sans-serif; 
-  background-color: #EFEFEF;
+  color: #1C2A43; // TODO: variable!
+  background-color: #e7f0fe;
 }
 
 .box {
   border: 1px solid #545454; /* TODO: use variable */
   padding: 5px;
+}
+
+.sk-flow-dot {
+  --sk-color: #FF7F04;
 }

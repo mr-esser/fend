@@ -19,16 +19,18 @@
 
     <main>
       <section>
-        <form class="" onsubmit="return Client.handleSubmit(event)">
-          <input
+        <h1>Sentiment Analysis</h1>
+        <form onsubmit="return Client.handleSubmit(event)">
+          <input class="text"
             id="name"
             type="text"
             name="input"
             value=""
-            placeholder="Target URL"
+            placeholder="Document URL"
             onblur="Client.onBlur()"
           />
           <input
+            class="button"
             type="submit"
             name="trigger"
             value="Analyse"
@@ -39,7 +41,7 @@
       </section>
 
       <section>
-        <h1>Analysis Results</h1>
+        <h1>Results</h1>
         <div id="spinner" class="hidden">
           <div class="sk-flow-dot"></div>
           <div class="sk-flow-dot"></div>
@@ -68,17 +70,22 @@
             >
           </div>
           <div class="box thead">
-            <span class="tooltip tooltip-top" data-tooltip="NONIRONIC: Text is without ironic marks.
-            IRONIC: Text has ironic marks.">Irony</span>
+            <span
+              class="tooltip tooltip-top"
+              data-tooltip="NONIRONIC: Text is without ironic marks.
+            IRONIC: Text has ironic marks."
+              >Irony</span
+            >
           </div>
           <div class="box thead">
-            <span class="tooltip tooltip-top" data-tooltip="Confidence associated with the sentiment analysis performed on the text."
+            <span
+              class="tooltip tooltip-top"
+              data-tooltip="Confidence associated with the sentiment analysis performed on the text."
               >Confidence</span
             >
           </div>
 
-          <div id="targetUrl" class="box data">
-          </div>
+          <div id="targetUrl" class="box data"></div>
           <div id="polarity" class="box data"></div>
           <div id="subjectivity" class="box data"></div>
           <div id="irony" class="box data"></div>
@@ -88,7 +95,9 @@
     </main>
 
     <footer>
-      <p>This is a footer</p>
+      <p>
+        <a href="https://www.meaningcloud.com/">Powered by MeaningCloud API</a>
+      </p>
     </footer>
   </body>
 </html>

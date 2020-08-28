@@ -1,9 +1,19 @@
 header {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   padding: 10px 40px;
 }
 
 .header-item {
-  font-family: sans-serif; /* TODO: Use a variable here */
+  font-size: 20px;
+  color: #1A3B64;
+  a, a:visited {
+    text-decoration: none;
+    color:#1A3B64;
+  }
+}
+
+figure {
+  transform: scale(0.8);
 }
