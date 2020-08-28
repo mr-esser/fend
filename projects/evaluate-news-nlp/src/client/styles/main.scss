@@ -15,6 +15,15 @@
   padding: 5px;
 }
 
+[data-tooltip] {
+  cursor: help;
+}
+
+[data-tooltip].tooltip-multiline:before {
+   white-space: pre-line;
+}
+
+// Spinner imported from spinkit
 .sk-flow-dot {
   --sk-color: #FF7F04;
 }

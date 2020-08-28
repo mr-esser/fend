@@ -3,7 +3,7 @@ body {
   flex-direction: column;
   min-height: 100vh;
   font-family: sans-serif;
-  background-color: ghostwhite ;
+  background-color: ghostwhite;
 }
 
 main {
@@ -18,36 +18,11 @@ section {
 h1 {
   margin: 10px 0;
   font-size: 20px;
-  color: #1A3B64;
-}
-/* Thanks to Andor Nagy from webdesignerhut.com for this neat trick.
- * See: https://webdesignerhut.com/pure-css-tooltips-with-html5-data-attribute/
- */
-.tooltip {
-  cursor: help;
+  color: #1a3b64;
 }
 
-.tooltip:hover {
-  /* Note(!): Position must not be default ('static') for this to work. */
-  position: relative;
-}
-
-.tooltip-top[data-tooltip]:hover:after {
-  content: attr(data-tooltip);
-  padding: 4px 8px;
-  position: absolute;
-  left: 0;
-  /* On top of styled element */
-  bottom: 100%;
-  white-space: pre-line;
-  /* In front of styled element */
-  z-index: 20;
-  min-width: 180px;
-
-  background-color: #000;
-  color: #fff;
-}
-
+/* Note(!): Must be defined here so that it does play nicely
+ * with the styles in main.scss! */
 .hidden {
   display: none;
 }
