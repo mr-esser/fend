@@ -5,8 +5,8 @@
 }
 
 .thead {
-  font-family: sans-serif; 
-  color: #1C2A43; // TODO: variable!
+  font-family: sans-serif;
+  color: #1c2a43; // TODO: variable!
   background-color: #e7f0fe;
 }
 
@@ -20,10 +20,10 @@
 }
 
 [data-tooltip].tooltip-multiline:before {
-   white-space: pre-line;
+  white-space: pre-line;
 }
 
 // Spinner imported from spinkit
 .sk-flow-dot {
-  --sk-color: #FF7F04;
+  --sk-color: #ff7f04;
 }
