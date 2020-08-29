@@ -21,7 +21,8 @@ h1 {
   color: #1a3b64;
 }
 
-/* Note(!): Must be defined here so that it does play nicely
+/* Class used to control the content of the page's results section.
+ * Note(!): Must be defined here so that it does play nicely
  * with the styles in main.scss! */
 .hidden {
   display: none;
