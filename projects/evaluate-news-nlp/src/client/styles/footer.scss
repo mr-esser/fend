@@ -6,7 +6,7 @@ footer {
   align-items: center;
   min-height: 6vh;
 
-  @include background-gradient(bottom, to top, $header-color, #87b7fb);
+  @include background-gradient(bottom, to top, $dark-blue, $light-blue);
 
   a,
   a:visited {

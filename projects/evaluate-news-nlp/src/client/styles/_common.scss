@@ -1,5 +1,17 @@
-$body-color: ghostwhite;
-$header-color:  #1a3b64;
+// General colors (some picked directly from the MeaningCloud logo)
+$white: ghostwhite;
+$brownish: #545454;
+$light-orange: #ffb76c;
+$dark-orange: #ff7f04;
+$lighter-blue: #e7f0fe;
+$light-blue: #87b7fb;
+$dark-blue: #1c2a43;
+
+// Color semantics/ application
+$body-color: $white;
+$header-color: $dark-blue;
+$text-background-color: $lighter-blue;
+$box-outline-color: $brownish;
 
 @mixin background-gradient($from, $to, $from-color, $to-color) {
   background: $from-color;

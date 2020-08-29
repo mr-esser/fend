@@ -1,3 +1,5 @@
+@import 'common';
+
 .result-grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -5,13 +7,12 @@
 }
 
 .thead {
-  font-family: sans-serif;
-  color: #1c2a43; // TODO: variable!
-  background-color: #e7f0fe;
+  color: $header-color;
+  background-color: $text-background-color;
 }
 
 .box {
-  border: 1px solid #545454; /* TODO: use variable */
+  border: 1px solid $box-outline-color;
   padding: 5px;
 }
 
@@ -23,7 +24,8 @@
   white-space: pre-line;
 }
 
-// Spinner imported from spinkit
+// Overwrites spinkit spinner color.
+// Note(!): SASS variable replacement fails here.
 .sk-flow-dot {
-  --sk-color: #ff7f04;
+  --sk-color: #ff7f04; // $dark-orange
 }

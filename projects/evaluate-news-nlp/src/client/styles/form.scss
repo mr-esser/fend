@@ -1,7 +1,7 @@
 @import 'common';
 
 form {
-  border: 1px solid #545454;
+  border: 1px solid $box-outline-color;
   border-radius: 6px;
   padding: 40px;
 }
@@ -14,10 +14,10 @@ input {
 }
 
 .text {
-  background: #e7f0fe; // TODO: Same in thead
+  background: $text-background-color;
 }
 
 .button {
-  @include background-gradient(top, to bottom, #FFB76C, #FF7F04);
-  color: #1C2A43; // TODO: Same as in thead
+  @include background-gradient(top, to bottom, $light-orange, $dark-orange);
+  color: $header-color;
 }
