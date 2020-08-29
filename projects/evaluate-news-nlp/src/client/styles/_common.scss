@@ -1,0 +1,9 @@
+$body-color: ghostwhite;
+$header-color:  #1a3b64;
+
+@mixin background-gradient($from, $to, $from-color, $to-color) {
+  background: $from-color;
+  background: -webkit-linear-gradient($from, $from-color, $to-color);
+  background: -moz-linear-gradient($from, $from-color, $to-color);
+  background: linear-gradient($to, $from-color, $to-color);
+}

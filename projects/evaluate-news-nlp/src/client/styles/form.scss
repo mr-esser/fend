@@ -1,3 +1,5 @@
+@import 'common';
+
 form {
   border: 1px solid #545454;
   border-radius: 6px;
@@ -16,9 +18,6 @@ input {
 }
 
 .button {
-  background: #FFB76C;
-  background: -webkit-linear-gradient(top, #FFB76C, #FF7F04);
-  background: -moz-linear-gradient(top, #FFB76C, #FF7F04);
-  background: linear-gradient(to bottom, #FFB76C, #FF7F04);
+  @include background-gradient(top, to bottom, #FFB76C, #FF7F04);
   color: #1C2A43; // TODO: Same as in thead
 }

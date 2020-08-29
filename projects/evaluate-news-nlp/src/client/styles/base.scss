@@ -1,9 +1,11 @@
+@import 'common';
+
 body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
   font-family: sans-serif;
-  background-color: ghostwhite;
+  background-color: $body-color;
 }
 
 main {
@@ -18,7 +20,7 @@ section {
 h1 {
   margin: 10px 0;
   font-size: 20px;
-  color: #1a3b64;
+  color: $header-color;
 }
 
 /* Class used to control the content of the page's results section.
