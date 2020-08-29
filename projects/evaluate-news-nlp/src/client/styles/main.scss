@@ -11,6 +11,14 @@
   background-color: $text-background-color;
 }
 
+.tdata {
+  /* Set line-height to allow proper bottom-line 
+   * rendering for links */
+  line-height: $base-text-line-height;
+  font-size: 13.5px;
+  @include text-link($header-color);
+}
+
 .box {
   border: 1px solid $box-outline-color;
   padding: 5px;
@@ -20,6 +28,7 @@
   cursor: help;
 }
 
+// Overwrites style in css-tooltip to preserve line breaks
 [data-tooltip].tooltip-multiline:before {
   white-space: pre-line;
 }

@@ -7,17 +7,13 @@ header {
   padding: 10px 40px;
 }
 
+figure {
+  transform: scale(0.8);
+}
+
 .header-item {
   font-size: 20px;
   color: $header-color;
 
-  a,
-  a:visited {
-    text-decoration: none;
-    color: $header-color;
-  }
-}
-
-figure {
-  transform: scale(0.8);
+  @include text-link($header-color);
 }

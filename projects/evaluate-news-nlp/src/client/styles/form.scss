@@ -2,14 +2,14 @@
 
 form {
   border: 1px solid $box-outline-color;
-  border-radius: 6px;
+  border-radius: 4px;
   padding: 40px;
 }
 
 input {
   padding: 5px;
   width: 100%;
-  line-height: 16px;
+  line-height: $base-text-line-height;
   margin: 10px 0;
 }
 

@@ -19,3 +19,26 @@ $box-outline-color: $brownish;
   background: -moz-linear-gradient($from, $from-color, $to-color);
   background: linear-gradient($to, $from-color, $to-color);
 }
+
+// Common text properties
+$base-text-line-height: 16px;
+
+@mixin text-link($color) {
+  a.text-link {
+    // Prevent standard underlining
+    text-decoration: none;
+    color: $color;
+    &:visited {
+      // Prevent color change after click
+      color: $color;
+    }
+    // Provide feedback upon interaction
+    &:focus,
+    &:hover {
+      border-bottom: 1px solid $color;
+    }
+    &:active {
+      color: $dark-orange;
+    }
+  }
+}

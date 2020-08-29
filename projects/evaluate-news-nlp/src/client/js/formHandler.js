@@ -32,7 +32,8 @@ function handleSubmit(event) {
 function updateUI(containerDiv, spinnerDiv, result) {
   spinnerDiv.classList.remove('sk-flow');
   const divUrl = containerDiv.querySelector('#targetUrl');
-  divUrl.innerHTML = `<a href="${result.targetUrl}">${result.targetUrl}</a>`;
+  divUrl.innerHTML =
+  `<a class="text-link" href="${result.targetUrl}">${result.targetUrl}</a>`;
   const divPolarity = containerDiv.querySelector('#polarity');
   divPolarity.innerHTML = result.polarity;
   const divSubjectivity = containerDiv.querySelector('#subjectivity');

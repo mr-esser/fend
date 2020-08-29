@@ -7,10 +7,5 @@ footer {
   min-height: 6vh;
 
   @include background-gradient(bottom, to top, $dark-blue, $light-blue);
-
-  a,
-  a:visited {
-    text-decoration: none;
-    color: $body-color;
-  }
+  @include text-link($body-color);
 }
