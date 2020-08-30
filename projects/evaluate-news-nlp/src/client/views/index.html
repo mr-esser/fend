@@ -9,7 +9,7 @@
     <header>
       <div class="header-item">
         <!-- Logo as demanded by MeaningCloud's Terms of Use.
-             See: https://www.meaningcloud.com/terms-and-conditions
+             See https://www.meaningcloud.com/terms-and-conditions.
         -->
         <figure>
           <a href="https://www.meaningcloud.com/">
@@ -46,11 +46,13 @@
 
       <section>
         <h1>Results</h1>
+        <!-- Spinner shown while the request is being processed -->
         <div id="spinner" class="hidden">
           <div class="sk-flow-dot"></div>
           <div class="sk-flow-dot"></div>
           <div class="sk-flow-dot"></div>
         </div>
+        <!-- Table with analysis results -->
         <div id="results" class="hidden">
           <div class="box thead">URL</div>
           <div class="box thead">
@@ -88,12 +90,15 @@
               >Confidence</span
             >
           </div>
-
           <div id="targetUrl" class="box tdata"></div>
           <div id="polarity" class="box tdata"></div>
           <div id="subjectivity" class="box tdata"></div>
           <div id="irony" class="box tdata"></div>
           <div id="confidence" class="box tdata"></div>
+        </div>
+        <!-- Error message. Used to notify user about networking errors. -->
+        <div id="error" class="hidden">
+          Ooops!!! Something went terribly wrong. Please try again later.
         </div>
       </section>
     </main>
@@ -101,7 +106,7 @@
     <footer>
       <p>
         <!-- Clickable link as demanded by MeaningCloud's Terms of Use.
-             See: https://www.meaningcloud.com/terms-and-conditions
+             See https://www.meaningcloud.com/terms-and-conditions.
         -->
         <a class="text-link" href="https://www.meaningcloud.com/"
           >Powered by MeaningCloud API</a

@@ -1,5 +1,7 @@
 @import 'common';
 
+$base-padding: 5px;
+
 .result-grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -21,7 +23,7 @@
 
 .box {
   border: 1px solid $box-outline-color;
-  padding: 5px;
+  padding: $base-padding;
 }
 
 [data-tooltip] {
@@ -37,4 +39,10 @@
 // Note(!): SASS variable replacement fails here.
 .sk-flow-dot {
   --sk-color: #ff7f04; // $dark-orange
+}
+
+.error {
+  padding: $base-padding;
+  background-color: darkred;
+  color: $body-color;
 }
