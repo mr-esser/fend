@@ -45,60 +45,67 @@
       </section>
 
       <section>
-        <h1>Results</h1>
         <!-- Spinner shown while the request is being processed -->
         <div id="spinner" class="hidden">
-          <div class="sk-flow-dot"></div>
-          <div class="sk-flow-dot"></div>
-          <div class="sk-flow-dot"></div>
+          <div class="sk-flow">
+            <div class="sk-flow-dot"></div>
+            <div class="sk-flow-dot"></div>
+            <div class="sk-flow-dot"></div>
+          </div>
         </div>
         <!-- Table with analysis results -->
         <div id="results" class="hidden">
-          <div class="box thead">URL</div>
-          <div class="box thead">
-            <span
-              class="tooltip-multiline"
-              data-tooltip="P+: strong positive
-            P: positive
-            NEU: neutral
-            N: negative
-            N+: strong negative
-            NONE: without sentiment"
-              >Polarity</span
-            >
-          </div>
-          <div class="box thead">
-            <span
-              class="tooltip-multiline"
-              data-tooltip="OBJECTIVE: Text is without subjectivity marks.
-            SUBJECTIVE: Text has subjective marks."
-              >Subjectivity</span
-            >
-          </div>
-          <div class="box thead">
-            <span
-              class="tooltip-multiline"
-              data-tooltip="NONIRONIC: Text is without ironic marks.
+          <h1>Results</h1>
+          <div class="result-grid">
+            <div class="box thead">URL</div>
+            <div class="box thead">
+              <span
+                class="tooltip-multiline"
+                data-tooltip="P+: strong positive
+              P: positive
+              NEU: neutral
+              N: negative
+              N+: strong negative
+              NONE: without sentiment"
+                >Polarity</span
+              >
+            </div>
+            <div class="box thead">
+              <span
+                class="tooltip-multiline"
+                data-tooltip="OBJECTIVE: Text is without subjectivity marks.
+              SUBJECTIVE: Text has subjective marks."
+                >Subjectivity</span
+              >
+            </div>
+            <div class="box thead">
+              <span
+                class="tooltip-multiline"
+                data-tooltip="NONIRONIC: Text is without ironic marks.
             IRONIC: Text has ironic marks."
-              >Irony</span
-            >
+                >Irony</span
+              >
+            </div>
+            <div class="box thead">
+              <span
+                class="tooltip-multiline"
+                data-tooltip="Confidence associated with the sentiment analysis performed on the text."
+                >Confidence</span
+              >
+            </div>
+            <div id="targetUrl" class="box tdata"></div>
+            <div id="polarity" class="box tdata"></div>
+            <div id="subjectivity" class="box tdata"></div>
+            <div id="irony" class="box tdata"></div>
+            <div id="confidence" class="box tdata"></div>
           </div>
-          <div class="box thead">
-            <span
-              class="tooltip-multiline"
-              data-tooltip="Confidence associated with the sentiment analysis performed on the text."
-              >Confidence</span
-            >
-          </div>
-          <div id="targetUrl" class="box tdata"></div>
-          <div id="polarity" class="box tdata"></div>
-          <div id="subjectivity" class="box tdata"></div>
-          <div id="irony" class="box tdata"></div>
-          <div id="confidence" class="box tdata"></div>
         </div>
         <!-- Error message. Used to notify user about networking errors. -->
         <div id="error" class="hidden">
-          Ooops!!! Something went terribly wrong. Please try again later.
+          <span class="error"
+            >Ooops!!! Something went terribly wrong. Please try again
+            later.</span
+          >
         </div>
       </section>
     </main>

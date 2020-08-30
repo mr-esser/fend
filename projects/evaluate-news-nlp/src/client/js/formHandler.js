@@ -11,9 +11,11 @@ function handleSubmit(event) {
 
   // TODO: This can be a real constant set on load!
   const resultsDiv = document.getElementById('results');
-  resultsDiv.classList.remove('result-grid');
+  resultsDiv.classList.add('hidden');
+  const errorDiv = document.getElementById('error');
+  errorDiv.classList.add('hidden');
   const spinnerDiv = document.getElementById('spinner');
-  spinnerDiv.classList.add('sk-flow');
+  spinnerDiv.classList.remove('hidden');
 
   fetch('http://localhost:8080/test', {
     method: 'POST',
@@ -25,12 +27,13 @@ function handleSubmit(event) {
   })
       .then((res) => res.json())
       .then((resultObj) =>
-        updateUI(resultsDiv, spinnerDiv, resultObj));
+        updateUI(resultsDiv, spinnerDiv, errorDiv, resultObj))
+      .catch((error) => updateUI(resultsDiv, spinnerDiv, errorDiv, error));
   // TODO: Add decent error handling and update UI accordingly
 }
 
-function updateUI(containerDiv, spinnerDiv, result) {
-  spinnerDiv.classList.remove('sk-flow');
+function updateUI(containerDiv, spinnerDiv, errorDiv, result) {
+  spinnerDiv.classList.add('hidden');
   const divUrl = containerDiv.querySelector('#targetUrl');
   divUrl.innerHTML =
   `<a class="text-link" href="${result.targetUrl}">${result.targetUrl}</a>`;
@@ -42,7 +45,7 @@ function updateUI(containerDiv, spinnerDiv, result) {
   divIrony.innerHTML = result.irony;
   const divConfidence = containerDiv.querySelector('#confidence');
   divConfidence.innerHTML = result.confidence + '%';
-  containerDiv.classList.add('result-grid');
+  containerDiv.classList.remove('hidden');
 }
 
 export {handleSubmit};
