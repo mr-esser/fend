@@ -9,6 +9,14 @@ function checkForName(inputText) {
 
 function onBlur() {
   console.log('::: Blurring :::');
+  const name = document.getElementById('name');
+  name.addEventListener('input', function(event) {
+    if (name.validity.typeMismatch) {
+      name.setCustomValidity('I am expecting a URL');
+    } else {
+      name.setCustomValidity('');
+    }
+  });
 }
 
 export {checkForName, onBlur};
