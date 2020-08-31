@@ -17,7 +17,7 @@ function handleSubmit(event) {
   const spinnerDiv = document.getElementById('spinner');
   spinnerDiv.classList.remove('hidden');
 
-  fetch('http://localhost:8080/test', {
+  fetch('http://localhost:8080/analysis', {
     method: 'POST',
     headers: {
       'Accept': 'application/json;charset=utf-8',

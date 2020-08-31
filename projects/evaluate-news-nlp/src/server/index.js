@@ -1,8 +1,7 @@
 require('dotenv').config();
-console.log(`Your API key is ${process.env.API_KEY}`);
-
 const fetch = require('node-fetch');
 
+/* Configure express */
 const express = require('express');
 const app = express();
 app.use(express.static('dist'));
@@ -14,50 +13,79 @@ app.use(bodyParser.urlencoded({
   extended: true,
 }));
 
-console.debug(__dirname);
 app.get('/', function(req, res) {
-  // Never gets called actually.
-  console.log('::: Get called on "/" :::');
+  // Never actually gets called. Does it?
+  console.debug('::: Get called on "/" :::');
   res.sendFile('dist/index.html');
 });
 
-app.post('/test', function(req, res) {
-  const apiUrl = new URL('https://api.meaningcloud.com/sentiment-2.1');
-  const apiParams = [
-    ['key', process.env.API_KEY], ['of', 'json'], ['lang', 'auto'],
-    ['url', req.body.url],
-  ];
-  apiParams.forEach(([key, value]) => apiUrl.searchParams.append(key, value));
-  console.debug(`Calling: ${apiUrl}`);
+app.post('/analysis', async function(req, res, next) {
+  const buildNlpRequestUrl = function() {
+    const url = new URL('https://api.meaningcloud.com/sentiment-2.1');
+    url.searchParams.append('key', process.env.API_KEY);
+    url.searchParams.append('of', 'json');
+    url.searchParams.append('lang', 'auto');
+    url.searchParams.append('url', req.body.url);
+    return url;
+  };
 
-  const apiResponse = fetch(apiUrl, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-    },
-    body: {},
-  });
+  const requestNlpAnalysis = async function(requestUrl) {
+    console.debug(`Calling: ${requestUrl}`);
+    return fetch(requestUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: {},
+    });
+  };
 
-  apiResponse.then((data) => data.json())
-      .then((json) => {
-        const responseSummary = {
-          targetUrl: req.body.url,
-          polarity: json.score_tag,
-          subjectivity: json.subjectivity,
-          irony: json.irony,
-          confidence: json.confidence,
-        };
-        console.debug(responseSummary);
-        res.status(200).send(responseSummary);
-      })
-      .catch((err) => `Doh! ${err}`);
-  // TODO: Correct error handling (report back to client),e.g.: Out of credits!
-  // TODO: Need to call next()?
-  // TODO: Make this an async function
+  const buildClientResponsePayload = function(analysisResult) {
+    const payload = {
+      targetUrl: req.body.url,
+      polarity: analysisResult.score_tag,
+      subjectivity: analysisResult.subjectivity,
+      irony: analysisResult.irony,
+      confidence: analysisResult.confidence,
+    };
+    console.debug(payload);
+    return payload;
+  };
+
+  try {
+    const requestUrl = buildNlpRequestUrl();
+    const serviceResponse = await requestNlpAnalysis(requestUrl);
+    if (!serviceResponse.ok) {
+      throw new Error(
+          'NLP service responded with HTTP error code' +
+          serviceResponse.status,
+      );
+    }
+
+    const analysisResult = await serviceResponse.json();
+    const statusCode = analysisResult.status.code;
+    const statusMessage = analysisResult.status.msg;
+    if (statusCode != 0 || statusMessage != 'OK') {
+      throw new Error(
+          `NLP service responded with: ${statusMessage} (${statusCode})`,
+      );
+    }
+
+    const responsePayload = buildClientResponsePayload(analysisResult);
+    res.status(200).send(responsePayload);
+  } catch (error) {
+    /* Note(!): Must pass error to default handler with next()!
+     * Default 500 error is sufficient for the client because
+     * it does not need to know about server internals or external APIs.
+     * Error will be logged by default. */
+    next(error);
+  }
 });
 
-// designates what port the app will listen to for incoming requests
-app.listen(8080, function() {
-  console.log('NLP app listening on port 8080!');
+const PORT = 8080;
+app.listen(PORT, function() {
+  console.log(`NLP app listening on port ${PORT}`);
+  console.log(`App working dir is '${__dirname}'`);
+  console.log(`MeaningCloud API key is ${process.env.API_KEY}`);
 });
