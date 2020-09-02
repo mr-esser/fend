@@ -29,7 +29,7 @@ app.post('/analysis', async function(req, res, next) {
     return url;
   };
 
-  const requestNlpAnalysis = async function(requestUrl) {
+  const fetchNlpAnalysis = async function(requestUrl) {
     console.debug(`Calling: ${requestUrl}`);
     return fetch(requestUrl, {
       method: 'POST',
@@ -55,7 +55,7 @@ app.post('/analysis', async function(req, res, next) {
 
   try {
     const requestUrl = buildNlpRequestUrl();
-    const serviceResponse = await requestNlpAnalysis(requestUrl);
+    const serviceResponse = await fetchNlpAnalysis(requestUrl);
     if (!serviceResponse.ok) {
       throw new Error(
           'NLP service responded with HTTP error code' +
