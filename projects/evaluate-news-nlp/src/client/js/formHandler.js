@@ -1,51 +1,90 @@
-import {checkForName} from './nameChecker';
+/* Constants re-used throughout the module */
+const STYLE_HIDDEN = 'hidden';
+const RESULT_SECTION = 'result';
 
-function handleSubmit(event) {
-  event.preventDefault();
-  console.log('::: Form Submitted :::');
+const ResultDiv = {
+  SPINNER: 'spinner',
+  GRID: 'result-grid',
+  ERROR: 'error-message',
+};
 
-  // check what text was put into the form field
-  const url = document.getElementById('name').value;
-  checkForName(url);
-  console.log(`::: URL submitted: ${url}`);
-
-  // TODO: This can be a real constant set on load!
-  const resultsDiv = document.getElementById('results');
-  resultsDiv.classList.add('hidden');
-  const errorDiv = document.getElementById('error');
-  errorDiv.classList.add('hidden');
-  const spinnerDiv = document.getElementById('spinner');
-  spinnerDiv.classList.remove('hidden');
-
-  fetch('http://localhost:8080/analysis', {
-    method: 'POST',
-    headers: {
-      'Accept': 'application/json;charset=utf-8',
-      'Content-Type': 'application/json;charset=utf-8',
-    },
-    body: JSON.stringify({url: url}),
-  })
-      .then((res) => res.json())
-      .then((resultObj) =>
-        updateUI(resultsDiv, spinnerDiv, errorDiv, resultObj))
-      .catch((error) => updateUI(resultsDiv, spinnerDiv, errorDiv, error));
-  // TODO: Add decent error handling and update UI accordingly
+// Shorthand helper function
+function getElement(id) {
+  return document.getElementById(id);
 }
 
-function updateUI(containerDiv, spinnerDiv, errorDiv, result) {
-  spinnerDiv.classList.add('hidden');
-  const divUrl = containerDiv.querySelector('#targetUrl');
-  divUrl.innerHTML =
+function hideElement(id) {
+  getElement(id).classList.add(STYLE_HIDDEN);
+}
+
+function showElement(id) {
+  getElement(id).classList.remove(STYLE_HIDDEN);
+}
+
+function showResultDiv(showId) {
+  Object.keys(ResultDiv).forEach((key) => {
+    const candidateId = ResultDiv[key];
+    if (candidateId === showId) {
+      showElement(candidateId);
+      console.debug('Revealing result div: ' + candidateId);
+    } else {
+      hideElement(candidateId);
+      console.debug('Hiding result div: ' + candidateId);
+    }
+  });
+}
+
+function getSubmittedUrl() {
+  const url = getElement('document-url').value;
+  console.debug(`Submitted document URL: ${url}`);
+  return url;
+}
+
+// Wrapper intended to minimize reflows when updating the UI section
+function updateResultSection(update) {
+  hideElement(RESULT_SECTION);
+  update();
+  showElement(RESULT_SECTION);
+}
+
+async function handleSubmit(event) {
+  event.preventDefault();
+
+  updateResultSection(() => {
+    showResultDiv(ResultDiv.SPINNER);
+  });
+
+  try {
+    const response = await fetch('http://localhost:8080/analysis', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json;charset=utf-8',
+        'Content-Type': 'application/json;charset=utf-8',
+      },
+      body: JSON.stringify({url: getSubmittedUrl()}),
+    });
+
+    const analysisResult = await response.json();
+
+    updateResultSection(() => {
+      fillResultGrid(analysisResult);
+      showResultDiv(ResultDiv.GRID);
+    });
+  } catch (error) {
+    console.error(error);
+    updateResultSection(() => {
+      showResultDiv(ResultDiv.ERROR);
+    });
+  }
+}
+
+function fillResultGrid(result) {
+  getElement('targetUrl').innerHTML =
   `<a class="text-link" href="${result.targetUrl}">${result.targetUrl}</a>`;
-  const divPolarity = containerDiv.querySelector('#polarity');
-  divPolarity.innerHTML = result.polarity;
-  const divSubjectivity = containerDiv.querySelector('#subjectivity');
-  divSubjectivity.innerHTML = result.subjectivity;
-  const divIrony = containerDiv.querySelector('#irony');
-  divIrony.innerHTML = result.irony;
-  const divConfidence = containerDiv.querySelector('#confidence');
-  divConfidence.innerHTML = result.confidence + '%';
-  containerDiv.classList.remove('hidden');
+  getElement('polarity').innerHTML = result.polarity;
+  getElement('subjectivity').innerHTML = result.subjectivity;
+  getElement('irony').innerHTML = result.irony;
+  getElement('confidence').innerHTML = `${result.confidence}%`;
 }
 
 export {handleSubmit};

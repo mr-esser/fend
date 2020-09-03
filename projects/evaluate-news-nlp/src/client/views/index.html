@@ -26,7 +26,7 @@
         <form onsubmit="return Client.handleSubmit(event)">
           <input
             class="text"
-            id="name"
+            id="document-url"
             type="text"
             name="input"
             value=""
@@ -44,7 +44,7 @@
         </form>
       </section>
 
-      <section>
+      <section id="result">
         <!-- Spinner shown while the request is being processed -->
         <div id="spinner" class="hidden">
           <div class="sk-flow">
@@ -54,7 +54,7 @@
           </div>
         </div>
         <!-- Table with analysis results -->
-        <div id="results" class="hidden">
+        <div id="result-grid" class="hidden">
           <h1>Results</h1>
           <div class="result-grid">
             <div class="box thead">URL</div>
@@ -101,7 +101,7 @@
           </div>
         </div>
         <!-- Error message. Used to notify user about networking errors. -->
-        <div id="error" class="hidden">
+        <div id="error-message" class="hidden">
           <span class="error"
             >Ooops!!! Something went terribly wrong. Please try again
             later.</span
