@@ -65,6 +65,15 @@ async function fetchAnalysisResult() {
   return response.json();
 }
 
+function fillResultGrid(result) {
+  getElement('targetUrl').innerHTML =
+  `<a class="text-link" href="${result.targetUrl}">${result.targetUrl}</a>`;
+  getElement('polarity').innerHTML = result.polarity;
+  getElement('subjectivity').innerHTML = result.subjectivity;
+  getElement('irony').innerHTML = result.irony;
+  getElement('confidence').innerHTML = `${result.confidence}%`;
+}
+
 // Note(!): 'async' requires special babel plugin and config option to work.
 async function handleSubmit(event) {
   event.preventDefault();
@@ -87,15 +96,6 @@ async function handleSubmit(event) {
       showResultDiv(ResultDiv.ERROR);
     });
   }
-}
-
-function fillResultGrid(result) {
-  getElement('targetUrl').innerHTML =
-  `<a class="text-link" href="${result.targetUrl}">${result.targetUrl}</a>`;
-  getElement('polarity').innerHTML = result.polarity;
-  getElement('subjectivity').innerHTML = result.subjectivity;
-  getElement('irony').innerHTML = result.irony;
-  getElement('confidence').innerHTML = `${result.confidence}%`;
 }
 
 export {handleSubmit};
