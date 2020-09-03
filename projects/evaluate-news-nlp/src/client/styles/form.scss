@@ -1,5 +1,12 @@
 @import 'common';
 
+@mixin input-base() {
+  padding: 5px;
+  width: 100%;
+  line-height: $base-text-line-height;
+  margin: 10px 0;
+}
+
 form {
   border: 1px solid $box-outline-color;
   border-radius: 4px;
@@ -7,17 +14,11 @@ form {
 }
 
 input {
-  padding: 5px;
-  width: 100%;
-  line-height: $base-text-line-height;
-  margin: 10px 0;
-}
-input:invalid {
-  border: 2px dashed red;
-}
-
-input:valid {
-  border: 2px solid black;
+  @include input-base();
+  &:invalid {
+    border: 0;
+    box-shadow: 0 0 0 4px red;
+  }
 }
 
 .text {
@@ -25,6 +26,7 @@ input:valid {
 }
 
 button {
+  @include input-base();
   @include background-gradient(top, to bottom, $light-orange, $dark-orange);
   color: $header-color;
 }

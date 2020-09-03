@@ -23,8 +23,10 @@
     <main>
       <section>
         <h1>Sentiment Analysis</h1>
+        <!-- Relying on built-in HTML5 validation for the form -->
         <form onsubmit="return Client.handleSubmit(event)">
           <input
+            autofocus
             class="text"
             id="document-url"
             type="url"
@@ -94,10 +96,9 @@
         </div>
         <!-- Error message. Used to notify user about networking errors. -->
         <div id="error-message" class="hidden">
-          <span class="error"
-            >Ooops!!! Something went terribly wrong. Please try again
-            later.</span
-          >
+          <div class="error-banner"
+            >D'OH! Something went wrong. Please check that the URL you entered is accessible and try again.
+          </div>
         </div>
       </section>
     </main>

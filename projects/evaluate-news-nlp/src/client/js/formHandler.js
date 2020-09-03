@@ -1,4 +1,3 @@
-/* Constants re-used throughout the module */
 const STYLE_HIDDEN = 'hidden';
 const RESULT_SECTION = 'result';
 
@@ -38,7 +37,7 @@ function showResultDiv(showId) {
 function getSubmittedUrl() {
   const url = getElement('document-url').value;
   console.debug(`Submitted document URL: ${url}`);
-  return url;
+  return url.trim();
 }
 
 // Wrapper intended to minimize reflows when updating the UI section
@@ -48,14 +47,14 @@ function updateResultSection(update) {
   showElement(RESULT_SECTION);
 }
 
-async function fetchAnalysisResult() {
+async function fetchAnalysisResult(documentUrl) {
   const response = await fetch('http://localhost:8080/analysis', {
     method: 'POST',
     headers: {
       'Accept': 'application/json;charset=utf-8',
       'Content-Type': 'application/json;charset=utf-8',
     },
-    body: JSON.stringify({url: getSubmittedUrl()}),
+    body: JSON.stringify({url: documentUrl}),
   });
   if (!response.ok) {
     throw new Error(
@@ -79,12 +78,20 @@ async function handleSubmit(event) {
   event.preventDefault();
 
   try {
+    const documentUrl = getSubmittedUrl();
+    /* Note(!) Empty url is permitted in the UI so that users
+     * do not start their workflow in an error state. */
+    if (documentUrl.length === 0) {
+    // Avoid follow-up errors on the server and simply return
+      return;
+    }
+
     updateResultSection(() => {
       showResultDiv(ResultDiv.SPINNER);
     });
 
     // Note(!): await is essential here to resolve the promise!
-    const analysisResult = await fetchAnalysisResult();
+    const analysisResult = await fetchAnalysisResult(documentUrl);
 
     updateResultSection(() => {
       fillResultGrid(analysisResult);
