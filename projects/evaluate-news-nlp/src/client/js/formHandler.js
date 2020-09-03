@@ -21,6 +21,7 @@ function showElement(id) {
   getElement(id).classList.remove(STYLE_HIDDEN);
 }
 
+// Reveal the given div in the results section and hide all siblings
 function showResultDiv(showId) {
   Object.keys(ResultDiv).forEach((key) => {
     const candidateId = ResultDiv[key];
@@ -47,24 +48,34 @@ function updateResultSection(update) {
   showElement(RESULT_SECTION);
 }
 
+async function fetchAnalysisResult() {
+  const response = await fetch('http://localhost:8080/analysis', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json;charset=utf-8',
+      'Content-Type': 'application/json;charset=utf-8',
+    },
+    body: JSON.stringify({url: getSubmittedUrl()}),
+  });
+  if (!response.ok) {
+    throw new Error(
+        `${response.status}: '${response.statusText}'`,
+    );
+  }
+  return response.json();
+}
+
+// Note(!): 'async' requires special babel plugin and config option to work.
 async function handleSubmit(event) {
   event.preventDefault();
 
-  updateResultSection(() => {
-    showResultDiv(ResultDiv.SPINNER);
-  });
-
   try {
-    const response = await fetch('http://localhost:8080/analysis', {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json;charset=utf-8',
-        'Content-Type': 'application/json;charset=utf-8',
-      },
-      body: JSON.stringify({url: getSubmittedUrl()}),
+    updateResultSection(() => {
+      showResultDiv(ResultDiv.SPINNER);
     });
 
-    const analysisResult = await response.json();
+    // Note(!): await is essential here to resolve the promise!
+    const analysisResult = await fetchAnalysisResult();
 
     updateResultSection(() => {
       fillResultGrid(analysisResult);
