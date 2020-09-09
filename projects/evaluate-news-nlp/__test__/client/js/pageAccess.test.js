@@ -1,20 +1,13 @@
 import * as Page from '../../../src/client/js/pageAccess';
 import {JSDOM} from 'jsdom';
 
-const createTestDocument = function() {
-  const {document} = new JSDOM(
-      '<!DOCTYPE html><body></body>',
-  ).window;
-  return document;
-};
-
-const exportedProperties = [
-  'fillResultGrid', 'getSubmittedUrl',
-  'updateResultSection', 'showResultDiv', 'showElement',
-  'hideElement', 'ResultDiv', 'STYLE_HIDDEN', 'RESULT_SECTION',
-];
 
 test('All API properties should be accessible', () => {
+  const exportedProperties = [
+    'fillResultGrid', 'getSubmittedUrl',
+    'updateResultSection', 'showResultDiv', 'showElement',
+    'hideElement', 'ResultDiv', 'STYLE_HIDDEN', 'RESULT_SECTION',
+  ];
   exportedProperties.forEach( (p) =>
     expect(Page[p]).toBeDefined(),
   );
@@ -28,14 +21,18 @@ test(`'ResultDiv' has properties SPINNER, GRID and ERROR`, () =>
 describe('Testing actual page access', () => {
   let document;
   beforeEach( () => {
-    document = createTestDocument();
+    document = function createTestDocument() {
+      const {document} = new JSDOM(
+          '<!DOCTYPE html><body></body>',
+      ).window;
+      return document;
+    }();
   });
 
   test(`'hideElement' applies 'hidden' style to element with given id`, () => {
     document.body.innerHTML =
-    `
-    <div id="${Page.ResultDiv.SPINNER}"></div>
-    `;
+      `<div id="${Page.ResultDiv.SPINNER}">
+      </div>`;
 
     Page.hideElement(document, Page.ResultDiv.SPINNER);
 
@@ -46,9 +43,8 @@ describe('Testing actual page access', () => {
   test(`'showElement' removes 'hidden' style from element with given id`,
       () => {
         document.body.innerHTML =
-    `
-    <div id="${Page.ResultDiv.SPINNER}" class="${Page.STYLE_HIDDEN}"></div>
-    `;
+          `<div id="${Page.ResultDiv.SPINNER}" class="${Page.STYLE_HIDDEN}">
+           </div>`;
 
         Page.showElement(document, Page.ResultDiv.SPINNER);
 
@@ -58,13 +54,11 @@ describe('Testing actual page access', () => {
 
   test(`'showResultDiv' reveals div with given id and hides siblings`, () => {
     document.body.innerHTML =
-    `
-    <section id="${Page.RESULT_SECTION}">
+    `<section id="${Page.RESULT_SECTION}">
       <div id="${Page.ResultDiv.SPINNER}" class="${Page.STYLE_HIDDEN}"></div>
       <div id="${Page.ResultDiv.GRID}" class=""></div>
       <div id="${Page.ResultDiv.ERROR}" class="${Page.STYLE_HIDDEN}"></div>
-    </section>
-    `;
+    </section>`;
 
     Page.showResultDiv(document, Page.ResultDiv.ERROR);
 
@@ -78,11 +72,9 @@ describe('Testing actual page access', () => {
 
   test(`'updateResultSection' executes the 'update' function reference`, () => {
     document.body.innerHTML =
-    `
-    <section id="${Page.RESULT_SECTION}">
-      <div id="${Page.ResultDiv.SPINNER}" class="${Page.STYLE_HIDDEN}"></div>
-    </section>
-    `;
+      `<section id="${Page.RESULT_SECTION}">
+        <div id="${Page.ResultDiv.SPINNER}" class="${Page.STYLE_HIDDEN}"></div>
+      </section>`;
     const mockUpdate = jest.fn((x) => x);
 
     Page.updateResultSection(document, mockUpdate);
@@ -92,11 +84,9 @@ describe('Testing actual page access', () => {
 
   test(`'updateResultSection' makes section visible upon completion`, () => {
     document.body.innerHTML =
-    `
-    <section id="${Page.RESULT_SECTION}">
-      <div id="${Page.ResultDiv.SPINNER}" class="${Page.STYLE_HIDDEN}"></div>
-    </section>
-    `;
+      `<section id="${Page.RESULT_SECTION}">
+        <div id="${Page.ResultDiv.SPINNER}" class="${Page.STYLE_HIDDEN}"></div>
+      </section>`;
 
     Page.updateResultSection(document, () => {});
 
@@ -106,15 +96,13 @@ describe('Testing actual page access', () => {
 
   test(`'fillResultGrid' uses given 'resultData' to fill grid`, () => {
     document.body.innerHTML =
-    `
-    <section id="${Page.RESULT_SECTION}">
-      <div id="targetUrl"></div>
-      <div id="polarity"></div>
-      <div id="subjectivity"></div>
-      <div id="irony"></div>
-      <div id="confidence"></div>
-    </section>
-    `;
+      `<section id="${Page.RESULT_SECTION}">
+        <div id="targetUrl"></div>
+        <div id="polarity"></div>
+        <div id="subjectivity"></div>
+        <div id="irony"></div>
+        <div id="confidence"></div>
+      </section>`;
 
     const resultData = {
       targetUrl: 'https://www.example.com',
@@ -144,11 +132,9 @@ describe('Testing actual page access', () => {
   test(`'getSubmittedUrl' retrieves trimmed URL from form`, () => {
     const url = 'https://www.example.com';
     document.body.innerHTML =
-  `
-    <input autofocus class="text" id="document-url" type="url"
-            name="input" value=" ${url}    " placeholder="Document URL"
-    />
-  `;
+      `<input autofocus class="text" id="document-url" type="url"
+                name="input" value=" ${url}    " placeholder="Document URL"
+        />`;
 
     expect(Page.getSubmittedUrl(document)).toBe(url);
   });
