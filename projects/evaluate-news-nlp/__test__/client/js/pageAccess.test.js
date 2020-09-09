@@ -34,7 +34,7 @@ describe('Testing actual page access', () => {
       `<div id="${Page.ResultDiv.SPINNER}">
       </div>`;
 
-    Page.hideElement(document, Page.ResultDiv.SPINNER);
+    Page.hideElement(Page.ResultDiv.SPINNER, document);
 
     expect(document.getElementById(Page.ResultDiv.SPINNER).classList.value)
         .toBe(Page.STYLE_HIDDEN);
@@ -46,7 +46,7 @@ describe('Testing actual page access', () => {
           `<div id="${Page.ResultDiv.SPINNER}" class="${Page.STYLE_HIDDEN}">
            </div>`;
 
-        Page.showElement(document, Page.ResultDiv.SPINNER);
+        Page.showElement(Page.ResultDiv.SPINNER, document);
 
         expect(document.getElementById(Page.ResultDiv.SPINNER).classList.value)
             .toBe('');
@@ -60,7 +60,7 @@ describe('Testing actual page access', () => {
       <div id="${Page.ResultDiv.ERROR}" class="${Page.STYLE_HIDDEN}"></div>
     </section>`;
 
-    Page.showResultDiv(document, Page.ResultDiv.ERROR);
+    Page.showResultDiv(Page.ResultDiv.ERROR, document);
 
     expect(document.getElementById(Page.ResultDiv.SPINNER)
         .classList.value).toBe(Page.STYLE_HIDDEN);
@@ -77,7 +77,7 @@ describe('Testing actual page access', () => {
       </section>`;
     const mockUpdate = jest.fn((x) => x);
 
-    Page.updateResultSection(document, mockUpdate);
+    Page.updateResultSection(mockUpdate, document);
 
     expect(mockUpdate.mock.calls.length).toBe(1);
   });
@@ -88,7 +88,7 @@ describe('Testing actual page access', () => {
         <div id="${Page.ResultDiv.SPINNER}" class="${Page.STYLE_HIDDEN}"></div>
       </section>`;
 
-    Page.updateResultSection(document, () => {});
+    Page.updateResultSection(() => {}, document);
 
     expect(document.getElementById(Page.RESULT_SECTION)
         .classList.value).toBe('');
@@ -111,7 +111,7 @@ describe('Testing actual page access', () => {
       irony: 'NONIRONIC',
       confidence: '99',
     };
-    Page.fillResultGrid(document, resultData);
+    Page.fillResultGrid(resultData, document);
 
     expect(document.getElementById('targetUrl').innerHTML)
         .toBe(

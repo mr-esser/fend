@@ -8,36 +8,38 @@ const ResultDiv = {
   ERROR: 'error-message',
 };
 
-const hideElement = function(document, id) {
+/* Note(!): document is passed in and assigned a default
+ * to allow testing in a node environment. */
+const hideElement = function(id, document = window.document) {
   document.getElementById(id).classList.add(STYLE_HIDDEN);
 };
 
-const showElement = function(document, id) {
+const showElement = function(id, document = window.document) {
   document.getElementById(id).classList.remove(STYLE_HIDDEN);
 };
 
 // Reveal the given div in the results section and hide all siblings
-const showResultDiv = function(document, showId) {
+const showResultDiv = function(showId, document = window.document) {
   Object.keys(ResultDiv).forEach((key) => {
     const candidateId = ResultDiv[key];
     if (candidateId === showId) {
-      showElement(document, candidateId);
+      showElement(candidateId, document);
       console.debug('Revealing result div: ' + candidateId);
     } else {
-      hideElement(document, candidateId);
+      hideElement(candidateId, document);
       console.debug('Hiding result div: ' + candidateId);
     }
   });
 };
 
 // Wrapper intended to minimize reflows when updating the UI section
-const updateResultSection = function(document, update) {
-  hideElement(document, RESULT_SECTION);
+const updateResultSection = function(update, document = window.document) {
+  hideElement(RESULT_SECTION, document);
   update();
-  showElement(document, RESULT_SECTION);
+  showElement(RESULT_SECTION, document);
 };
 
-const fillResultGrid = function(document, resultData) {
+const fillResultGrid = function(resultData, document = window.document) {
   document.getElementById('targetUrl').innerHTML =
   `<a class="text-link" href="${resultData.targetUrl}">
      ${resultData.targetUrl}
@@ -48,7 +50,7 @@ const fillResultGrid = function(document, resultData) {
   document.getElementById('confidence').innerHTML = `${resultData.confidence}%`;
 };
 
-const getSubmittedUrl = function(document) {
+const getSubmittedUrl = function(document = window.document) {
   const url = document.getElementById('document-url').value;
   console.debug(`Submitted document URL: ${url}`);
   return url.trim();
