@@ -22,9 +22,9 @@ const fetchNlpAnalysis = async function(requestUrl) {
   });
 };
 
-const buildClientResponsePayload = function(analysisResult, targetUrl) {
+const summarizeNlpAnalysis = function(analysisResult, documentUrl) {
   const payload = {
-    targetUrl: targetUrl,
+    targetUrl: documentUrl,
     polarity: analysisResult.score_tag,
     subjectivity: analysisResult.subjectivity,
     irony: analysisResult.irony,
@@ -33,9 +33,15 @@ const buildClientResponsePayload = function(analysisResult, targetUrl) {
   return payload;
 };
 
-const runAnalysis = async function(documentUrl) {
-  const requestUrl = buildNlpRequestUrl(documentUrl);
-  const serviceResponse = await fetchNlpAnalysis(requestUrl);
+// Functions handed in as arguments to allow easy mocking
+const runNlpAnalysis = async function(
+    documentUrl,
+    buildRequest=buildNlpRequestUrl,
+    fetchAnalysis=fetchNlpAnalysis,
+    summarize=summarizeNlpAnalysis,
+) {
+  const requestUrl = buildRequest(documentUrl);
+  const serviceResponse = await fetchAnalysis(requestUrl);
   if (!serviceResponse.ok) {
     throw new Error(
         'NLP service responded with HTTP error code' +
@@ -43,21 +49,21 @@ const runAnalysis = async function(documentUrl) {
     );
   }
 
-  const analysisResult = await serviceResponse.json();
-  const statusCode = analysisResult.status.code;
-  const statusMessage = analysisResult.status.msg;
+  const fetchedResult = await serviceResponse.json();
+  const statusCode = fetchedResult.status.code;
+  const statusMessage = fetchedResult.status.msg;
   if (statusCode != 0 || statusMessage != 'OK') {
     throw new Error(
         `NLP service responded with: ${statusMessage} (${statusCode})`,
     );
   }
 
-  return buildClientResponsePayload(analysisResult, documentUrl);
+  return summarize(fetchedResult, documentUrl);
 };
 
 module.exports = {
   buildNlpRequestUrl: buildNlpRequestUrl,
   fetchNlpAnalysis: fetchNlpAnalysis,
-  buildClientResponsePayload: buildClientResponsePayload,
-  runAnalysis: runAnalysis,
+  summarizeNlpAnalysis: summarizeNlpAnalysis,
+  runNlpAnalysis: runNlpAnalysis,
 };

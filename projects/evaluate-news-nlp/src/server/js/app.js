@@ -1,4 +1,4 @@
-const {runAnalysis} = require('./nlpRequest');
+const {runNlpAnalysis} = require('./nlpRequest');
 
 /* Configure express */
 const express = require('express');
@@ -20,7 +20,7 @@ app.get('/', function(req, res) {
 
 app.post('/analysis', async function(req, res, next) {
   try {
-    const result = await runAnalysis(req.body.url);
+    const result = await runNlpAnalysis(req.body.url);
     console.debug(result);
     res.status(200).send(result);
   } catch (error) {
