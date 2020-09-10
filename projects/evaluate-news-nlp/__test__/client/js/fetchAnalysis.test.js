@@ -29,8 +29,7 @@ test('Fetch should throw if response status not OK', async () => {
     status: 404,
     statusText: 'Not Found',
   };
-  const mockFetch = jest.fn( () => Promise.resolve(mockResponse));
-
+  const mockFetch = jest.fn().mockResolvedValue(mockResponse);
   try {
     await fetchAnalysisResult(document, route, mockFetch);
   } catch (error) {
@@ -38,7 +37,7 @@ test('Fetch should throw if response status not OK', async () => {
     expect(error.message)
         .toMatch(`${mockResponse.status}: ${mockResponse.statusText}`);
   }
-  expect(mockFetch.mock.calls.length).toBe(1);
+  expect(mockFetch).toBeCalledTimes(1);
 });
 
 test('Fetch should return analysis result if response status OK',
@@ -51,10 +50,10 @@ test('Fetch should return analysis result if response status OK',
         statusText: 'OK',
         json: () => Promise.resolve(mockAnalysis),
       };
-      const mockFetch = jest.fn( () => Promise.resolve(mockResponse));
+      const mockFetch = jest.fn().mockResolvedValue(mockResponse);
 
       const result = await fetchAnalysisResult('', route, mockFetch);
 
-      expect(mockFetch.mock.calls.length).toBe(1);
+      expect(mockFetch).toBeCalledTimes(1);
       expect(result).toEqual(mockAnalysis);
     });
