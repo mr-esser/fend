@@ -1,5 +1,4 @@
-require('dotenv').config();
-const {buildNlpRequestUrl, fetchNlpAnalysis} = require('./nlpRequest');
+const {runAnalysis} = require('./nlpRequest');
 
 /* Configure express */
 const express = require('express');
@@ -19,44 +18,11 @@ app.get('/', function(req, res) {
   res.sendFile('dist/index.html');
 });
 
-const buildClientResponsePayload = function(analysisResult, targetUrl) {
-  const payload = {
-    targetUrl: targetUrl,
-    polarity: analysisResult.score_tag,
-    subjectivity: analysisResult.subjectivity,
-    irony: analysisResult.irony,
-    confidence: analysisResult.confidence,
-  };
-  console.debug(payload);
-  return payload;
-};
-
-const handlePostAnalysis = async function(documentUrl) {
-  const requestUrl = buildNlpRequestUrl(documentUrl);
-  const serviceResponse = await fetchNlpAnalysis(requestUrl);
-  if (!serviceResponse.ok) {
-    throw new Error(
-        'NLP service responded with HTTP error code' +
-          serviceResponse.status,
-    );
-  }
-
-  const analysisResult = await serviceResponse.json();
-  const statusCode = analysisResult.status.code;
-  const statusMessage = analysisResult.status.msg;
-  if (statusCode != 0 || statusMessage != 'OK') {
-    throw new Error(
-        `NLP service responded with: ${statusMessage} (${statusCode})`,
-    );
-  }
-
-  return buildClientResponsePayload(analysisResult, documentUrl);
-};
-
 app.post('/analysis', async function(req, res, next) {
   try {
-    const responsePayload = await handlePostAnalysis(req.body.url);
-    res.status(200).send(responsePayload);
+    const result = await runAnalysis(req.body.url);
+    console.debug(result);
+    res.status(200).send(result);
   } catch (error) {
     /* Note(!): Must pass error to default handler with next()!
      * Default 500 error is sufficient for the client because

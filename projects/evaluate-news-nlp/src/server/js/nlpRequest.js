@@ -1,3 +1,4 @@
+require('dotenv').config();
 const fetch = require('node-fetch');
 
 const buildNlpRequestUrl = function(documentUrl = '') {
@@ -21,7 +22,42 @@ const fetchNlpAnalysis = async function(requestUrl) {
   });
 };
 
+const buildClientResponsePayload = function(analysisResult, targetUrl) {
+  const payload = {
+    targetUrl: targetUrl,
+    polarity: analysisResult.score_tag,
+    subjectivity: analysisResult.subjectivity,
+    irony: analysisResult.irony,
+    confidence: analysisResult.confidence,
+  };
+  return payload;
+};
+
+const runAnalysis = async function(documentUrl) {
+  const requestUrl = buildNlpRequestUrl(documentUrl);
+  const serviceResponse = await fetchNlpAnalysis(requestUrl);
+  if (!serviceResponse.ok) {
+    throw new Error(
+        'NLP service responded with HTTP error code' +
+          serviceResponse.status,
+    );
+  }
+
+  const analysisResult = await serviceResponse.json();
+  const statusCode = analysisResult.status.code;
+  const statusMessage = analysisResult.status.msg;
+  if (statusCode != 0 || statusMessage != 'OK') {
+    throw new Error(
+        `NLP service responded with: ${statusMessage} (${statusCode})`,
+    );
+  }
+
+  return buildClientResponsePayload(analysisResult, documentUrl);
+};
+
 module.exports = {
   buildNlpRequestUrl: buildNlpRequestUrl,
   fetchNlpAnalysis: fetchNlpAnalysis,
+  buildClientResponsePayload: buildClientResponsePayload,
+  runAnalysis: runAnalysis,
 };
