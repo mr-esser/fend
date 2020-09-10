@@ -19,39 +19,43 @@ app.get('/', function(req, res) {
   res.sendFile('dist/index.html');
 });
 
-app.post('/analysis', async function(req, res, next) {
-  const buildClientResponsePayload = function(analysisResult) {
-    const payload = {
-      targetUrl: req.body.url,
-      polarity: analysisResult.score_tag,
-      subjectivity: analysisResult.subjectivity,
-      irony: analysisResult.irony,
-      confidence: analysisResult.confidence,
-    };
-    console.debug(payload);
-    return payload;
+const buildClientResponsePayload = function(analysisResult, targetUrl) {
+  const payload = {
+    targetUrl: targetUrl,
+    polarity: analysisResult.score_tag,
+    subjectivity: analysisResult.subjectivity,
+    irony: analysisResult.irony,
+    confidence: analysisResult.confidence,
   };
+  console.debug(payload);
+  return payload;
+};
 
-  try {
-    const requestUrl = buildNlpRequestUrl(req.body.url);
-    const serviceResponse = await fetchNlpAnalysis(requestUrl);
-    if (!serviceResponse.ok) {
-      throw new Error(
-          'NLP service responded with HTTP error code' +
+const handlePostAnalysis = async function(documentUrl) {
+  const requestUrl = buildNlpRequestUrl(documentUrl);
+  const serviceResponse = await fetchNlpAnalysis(requestUrl);
+  if (!serviceResponse.ok) {
+    throw new Error(
+        'NLP service responded with HTTP error code' +
           serviceResponse.status,
-      );
-    }
+    );
+  }
 
-    const analysisResult = await serviceResponse.json();
-    const statusCode = analysisResult.status.code;
-    const statusMessage = analysisResult.status.msg;
-    if (statusCode != 0 || statusMessage != 'OK') {
-      throw new Error(
-          `NLP service responded with: ${statusMessage} (${statusCode})`,
-      );
-    }
+  const analysisResult = await serviceResponse.json();
+  const statusCode = analysisResult.status.code;
+  const statusMessage = analysisResult.status.msg;
+  if (statusCode != 0 || statusMessage != 'OK') {
+    throw new Error(
+        `NLP service responded with: ${statusMessage} (${statusCode})`,
+    );
+  }
 
-    const responsePayload = buildClientResponsePayload(analysisResult);
+  return buildClientResponsePayload(analysisResult, documentUrl);
+};
+
+app.post('/analysis', async function(req, res, next) {
+  try {
+    const responsePayload = await handlePostAnalysis(req.body.url);
     res.status(200).send(responsePayload);
   } catch (error) {
     /* Note(!): Must pass error to default handler with next()!
