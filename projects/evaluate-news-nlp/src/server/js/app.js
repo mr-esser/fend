@@ -1,5 +1,5 @@
 require('dotenv').config();
-const fetch = require('node-fetch');
+const {buildNlpRequestUrl, fetchNlpAnalysis} = require('./nlpRequest');
 
 /* Configure express */
 const express = require('express');
@@ -20,27 +20,6 @@ app.get('/', function(req, res) {
 });
 
 app.post('/analysis', async function(req, res, next) {
-  const buildNlpRequestUrl = function() {
-    const url = new URL('https://api.meaningcloud.com/sentiment-2.1');
-    url.searchParams.append('key', process.env.API_KEY);
-    url.searchParams.append('of', 'json');
-    url.searchParams.append('lang', 'auto');
-    url.searchParams.append('url', req.body.url);
-    return url;
-  };
-
-  const fetchNlpAnalysis = async function(requestUrl) {
-    console.debug(`Calling: ${requestUrl}`);
-    return fetch(requestUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      },
-      body: {},
-    });
-  };
-
   const buildClientResponsePayload = function(analysisResult) {
     const payload = {
       targetUrl: req.body.url,
@@ -54,7 +33,7 @@ app.post('/analysis', async function(req, res, next) {
   };
 
   try {
-    const requestUrl = buildNlpRequestUrl();
+    const requestUrl = buildNlpRequestUrl(req.body.url);
     const serviceResponse = await fetchNlpAnalysis(requestUrl);
     if (!serviceResponse.ok) {
       throw new Error(
