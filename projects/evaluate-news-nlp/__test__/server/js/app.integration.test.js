@@ -19,13 +19,13 @@ test('GET / should yield 200', () => {
 });
 
 describe('Testing POST /analysis', () => {
-  test('Inaccessible document URL should return 500', () => {
+  test('with inaccessible document URL should return 500', () => {
     return/* ! */ request(app).post('/analysis')
         .set('Content-Type', 'application/json')
         .send({url: 'doh'}).expect(500);
   });
 
-  test('Accessible document URL should return 200 and a result', () => {
+  test('with accessible document URL should return 200 and a result', () => {
     const documentUrl = 'https://www.google.com';
     return/* ! */ request(app).post('/analysis')
         .set('Content-Type', 'application/json')

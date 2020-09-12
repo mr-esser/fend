@@ -49,103 +49,105 @@ test(`'summarizeNlpAnalysis' should return well-formed object`, async () => {
   expect(summary).toEqual(expectedSummary);
 });
 
-test(`'runNlpAnalysis' should throw error if service response not OK`,
-    async () => {
-      const mockDocumentUrl = 'https://mockdocument.url';
-      const mockRequestUrl = 'https://mockrequest.url';
-      const mockFuncBuildRequest = jest.fn().mockReturnValue(mockRequestUrl);
-      const mockResponse = {ok: false, status: 500};
-      const mockFuncFetchAnalysis =
+describe(`Function 'runNlpAnalysis'`, () =>{
+  test(`should throw error if service response is not OK`,
+      async () => {
+        const mockDocumentUrl = 'https://mockdocument.url';
+        const mockRequestUrl = 'https://mockrequest.url';
+        const mockFuncBuildRequest = jest.fn().mockReturnValue(mockRequestUrl);
+        const mockResponse = {ok: false, status: 500};
+        const mockFuncFetchAnalysis =
         jest.fn().mockReturnValue(mockResponse);
-      const mockFuncSummarize = jest.fn();
+        const mockFuncSummarize = jest.fn();
 
-      try {
-        await /* ! */ runNlpAnalysis(
-            mockDocumentUrl, mockFuncBuildRequest,
-            mockFuncFetchAnalysis, mockFuncSummarize,
-        );
-      } catch (error) {
-        expect(error).toBeInstanceOf(Error);
-        expect(error.message).toBe(
-            `NLP service responded with HTTP error code ${mockResponse.status}`,
-        );
-      }
-      expect(mockFuncBuildRequest).toBeCalledWith(mockDocumentUrl);
-      expect(mockFuncFetchAnalysis).toBeCalledWith(mockRequestUrl);
-      expect(mockFuncSummarize).not.toBeCalled();
-    });
+        try {
+          await/* ! */ runNlpAnalysis(
+              mockDocumentUrl, mockFuncBuildRequest,
+              mockFuncFetchAnalysis, mockFuncSummarize,
+          );
+        } catch (error) {
+          expect(error).toBeInstanceOf(Error);
+          expect(error.message).toBe(
+              'NLP service responded with HTTP error code ' +
+                mockResponse.status);
+        }
+        expect(mockFuncBuildRequest).toBeCalledWith(mockDocumentUrl);
+        expect(mockFuncFetchAnalysis).toBeCalledWith(mockRequestUrl);
+        expect(mockFuncSummarize).not.toBeCalled();
+      });
 
-test(`'runNlpAnalysis' should throw error if NLP result status not OK`,
-    async () => {
-      const mockDocumentUrl = 'https://mockdocument.url';
-      const mockRequestUrl = 'https://mockrequest.url';
-      const mockFuncBuildRequest = jest.fn().mockReturnValue(mockRequestUrl);
-      const mockResponseBody = {
-        status: {
-          code: '666',
-          msg: 'Received super evil request',
-        },
-      };
-      const mockResponse = {
-        ok: true,
-        status: 200,
-        json: () => mockResponseBody,
-      };
-      const mockFuncFetchAnalysis =
+  test(`should throw error if NLP result status is not OK`,
+      async () => {
+        const mockDocumentUrl = 'https://mockdocument.url';
+        const mockRequestUrl = 'https://mockrequest.url';
+        const mockFuncBuildRequest = jest.fn().mockReturnValue(mockRequestUrl);
+        const mockResponseBody = {
+          status: {
+            code: '666',
+            msg: 'Received super evil request',
+          },
+        };
+        const mockResponse = {
+          ok: true,
+          status: 200,
+          json: () => mockResponseBody,
+        };
+        const mockFuncFetchAnalysis =
         jest.fn().mockReturnValue(mockResponse);
-      const mockFuncSummarize = jest.fn();
+        const mockFuncSummarize = jest.fn();
 
-      try {
-        await /* ! */ runNlpAnalysis(
-            mockDocumentUrl, mockFuncBuildRequest,
-            mockFuncFetchAnalysis, mockFuncSummarize,
-        );
-      } catch (error) {
-        expect(error).toBeInstanceOf(Error);
-        expect(error.message).toBe(
-            `NLP service responded with: ${mockResponseBody.status.msg} `+
+        try {
+          await/* ! */ runNlpAnalysis(
+              mockDocumentUrl, mockFuncBuildRequest,
+              mockFuncFetchAnalysis, mockFuncSummarize,
+          );
+        } catch (error) {
+          expect(error).toBeInstanceOf(Error);
+          expect(error.message).toBe(
+              `NLP service responded with: ${mockResponseBody.status.msg} `+
             `(${mockResponseBody.status.code})`,
-        );
-      }
-      expect(mockFuncBuildRequest).toBeCalledWith(mockDocumentUrl);
-      expect(mockFuncFetchAnalysis).toBeCalledWith(mockRequestUrl);
-      expect(mockFuncSummarize).not.toBeCalled();
-    });
+          );
+        }
+        expect(mockFuncBuildRequest).toBeCalledWith(mockDocumentUrl);
+        expect(mockFuncFetchAnalysis).toBeCalledWith(mockRequestUrl);
+        expect(mockFuncSummarize).not.toBeCalled();
+      });
 
-test(`'runNlpAnalysis' should return analysis summary if NLP result status OK`,
-    async () => {
-      const mockDocumentUrl = 'https://mockdocument.url';
-      const mockRequestUrl = 'https://mockrequest.url';
-      const mockFuncBuildRequest = jest.fn().mockReturnValue(mockRequestUrl);
-      const mockResponseBody = {
-        status: {
-          code: 0,
-          msg: 'OK',
-        },
+  test(`should return analysis summary if NLP result status is OK`,
+      async () => {
+        const mockDocumentUrl = 'https://mockdocument.url';
+        const mockRequestUrl = 'https://mockrequest.url';
+        const mockFuncBuildRequest = jest.fn().mockReturnValue(mockRequestUrl);
+        const mockResponseBody = {
+          status: {
+            code: 0,
+            msg: 'OK',
+          },
         /* Would normally contain some analysis data here.
            Omitting that, since it is irrelevant for the test.
          */
-      };
-      const mockResponse = {
-        ok: true,
-        status: 200,
-        json: () => mockResponseBody,
-      };
-      const mockFuncFetchAnalysis =
+        };
+        const mockResponse = {
+          ok: true,
+          status: 200,
+          json: () => mockResponseBody,
+        };
+        const mockFuncFetchAnalysis =
         jest.fn().mockReturnValue(mockResponse);
-      const mockFuncSummarize = jest.fn();
-      const mockSummary = 'analysis summary';
-      mockFuncSummarize.mockReturnValue(mockSummary);
+        const mockFuncSummarize = jest.fn();
+        const mockSummary = 'analysis summary';
+        mockFuncSummarize.mockReturnValue(mockSummary);
 
-      const analysisResult = await /* ! */ runNlpAnalysis(
-          mockDocumentUrl, mockFuncBuildRequest,
-          mockFuncFetchAnalysis, mockFuncSummarize,
-      );
+        const analysisResult = await/* ! */ runNlpAnalysis(
+            mockDocumentUrl, mockFuncBuildRequest,
+            mockFuncFetchAnalysis, mockFuncSummarize,
+        );
 
-      expect(mockFuncBuildRequest).toBeCalledWith(mockDocumentUrl);
-      expect(mockFuncFetchAnalysis).toBeCalledWith(mockRequestUrl);
-      expect(mockFuncSummarize).toBeCalled();
-      expect(mockFuncSummarize.mock.calls[0][0]).toBe(mockResponseBody);
-      expect(mockFuncSummarize.mock.calls[0][1]).toBe(mockDocumentUrl);
-      expect(analysisResult).toBe(mockSummary);
-    });
+        expect(mockFuncBuildRequest).toBeCalledWith(mockDocumentUrl);
+        expect(mockFuncFetchAnalysis).toBeCalledWith(mockRequestUrl);
+        expect(mockFuncSummarize).toBeCalled();
+        expect(mockFuncSummarize.mock.calls[0][0]).toBe(mockResponseBody);
+        expect(mockFuncSummarize.mock.calls[0][1]).toBe(mockDocumentUrl);
+        expect(analysisResult).toBe(mockSummary);
+      });
+});
