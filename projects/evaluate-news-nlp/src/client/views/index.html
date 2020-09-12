@@ -96,8 +96,9 @@
         </div>
         <!-- Error message. Used to notify user about networking errors. -->
         <div id="error-message" class="hidden">
-          <div class="error-banner"
-            >D'OH! Something went wrong. Please check that the URL you entered is accessible and try again.
+          <div class="error-banner">
+            D'OH! Something went wrong. Please check that the URL you entered is
+            accessible and try again.
           </div>
         </div>
       </section>
@@ -114,4 +115,13 @@
       </p>
     </footer>
   </body>
+  <script>
+    // Check that service workers are supported
+    if ('serviceWorker' in navigator) {
+      // Use the window load event to keep the page load performant
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js');
+      });
+    }
+  </script>
 </html>
