@@ -1,9 +1,12 @@
 require('dotenv').config();
 const fetch = require('node-fetch');
 
-const buildNlpRequestUrl = function(documentUrl = '') {
+const buildNlpRequestUrl = function(
+    documentUrl = '',
+    apiKey = process.env.API_KEY,
+) {
   const url = new URL('https://api.meaningcloud.com/sentiment-2.1');
-  url.searchParams.append('key', process.env.API_KEY);
+  url.searchParams.append('key', apiKey);
   url.searchParams.append('of', 'json');
   url.searchParams.append('lang', 'auto');
   url.searchParams.append('url', documentUrl);
@@ -44,7 +47,7 @@ const runNlpAnalysis = async function(
   const serviceResponse = await fetchAnalysis(requestUrl);
   if (!serviceResponse.ok) {
     throw new Error(
-        'NLP service responded with HTTP error code' +
+        'NLP service responded with HTTP error code ' +
           serviceResponse.status,
     );
   }
