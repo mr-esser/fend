@@ -2,7 +2,7 @@
 
 This is a small web application that can be used to perform a simple sentiment analysis on arbitrary English web documents.
 
-Simply launch the app and bring up the website in your browser. Then, enter a valid URL in the **Document URL** field and press **Analyse** to trigger the analysis. Once complete, the analysis results will appear directly below the input area. Depending on the size of the document you provided, this may take a few seconds. Pop-ups on the result table headers explain the meanings of the values shown.
+Simply launch the app and bring up the website in your browser. Then, enter a valid URL in the **Document URL** field and press **Analyse** to trigger the analysis. Once complete, the analysis results will appear directly below the input area. Depending on the size of the document you are analysing, this may take a few seconds. Pop-ups on the result table headers explain the meanings of the values shown.
 
 Internally, the app relies on [MeaningCloud](http:/www.meaningcloud.com)'s NLP offering for the document analysis. So, you will need to sign up for a free API key before using the app.
 
@@ -21,7 +21,7 @@ Internally, the app relies on [MeaningCloud](http:/www.meaningcloud.com)'s NLP o
 
 If anything goes wrong behind the scenes, the frontend will alert you by showing an - admittedly very general - error message. In most cases, the error is either due to the app backend being down, or the URL being inaccessible or pointing to a non-English document.
 
-If none of the above reasons are to blame, take a look at the server console log for more detailed hints as to what went wrong.
+If none of the above conditions are to blame, take a look at the server console log for more detailed hints as to what went wrong.
 
 Generally, articles from [The Guardian](https://www.theguardian.com) have proven to play nice with MeaningCloud's service. So, they can be considered a good starting point for bug-hunting.
 
