@@ -28,7 +28,7 @@ Generally, articles from [The Guardian](https://www.theguardian.com) have proven
 # Development
 
 - The frontend can be served in dev mode by running `npm run build-dev`.
-  The dev server is configured to listen on **port 9000** per default and will properly interact with the production backend, if it is running.
+  The dev server is configured to listen on **port 9000** per default and will properly interact with the production backend, if it is running. It will attempt to open the frontend page in Chrome automatically.
 - Linting (JS only): `npm run lint`.
 - Unit testing: `npm run test`.
 - Integration testing: `npm run itest`.
