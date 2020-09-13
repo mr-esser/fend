@@ -1,43 +1,131 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-    <head>
-        <meta charset="utf-8">
-        <title>Test</title>
-        <link rel="stylesheet" href="/styles/resets.css">
-        <link rel="stylesheet" href="/styles/base.css">
-        <link rel="stylesheet" href="/styles/header.css">
-        <link rel="stylesheet" href="/styles/form.css">
-        <link rel="stylesheet" href="/styles/footer.css">
-    </head>
+  <head>
+    <meta charset="utf-8" />
+    <title>Document Sentiment Analysis</title>
+  </head>
 
-    <body>
+  <body>
+    <header>
+      <div class="header-item">
+        <!-- Logo as demanded by MeaningCloud's Terms of Use.
+             See https://www.meaningcloud.com/terms-and-conditions.
+        -->
+        <figure>
+          <a href="https://www.meaningcloud.com/">
+            <img src="./../images/logo.png" alt="" />
+          </a>
+        </figure>
+      </div>
+      <div class="header-item"><a class="text-link" href="#">Home</a></div>
+    </header>
 
-        <header>
-            <div class="">
-                Logo
+    <main>
+      <section>
+        <h1>Sentiment Analysis</h1>
+        <!-- Relying on built-in HTML5 validation for the form -->
+        <form onsubmit="return Client.handleSubmit(event)">
+          <input
+            autofocus
+            class="text"
+            id="document-url"
+            type="url"
+            name="input"
+            value=""
+            placeholder="Document URL"
+          />
+          <button id="trigger">Submit</button>
+        </form>
+      </section>
+
+      <section id="result">
+        <!-- Spinner shown while the request is being processed -->
+        <div id="spinner" class="hidden">
+          <div class="sk-flow">
+            <div class="sk-flow-dot"></div>
+            <div class="sk-flow-dot"></div>
+            <div class="sk-flow-dot"></div>
+          </div>
+        </div>
+        <!-- Table with analysis results -->
+        <div id="result-grid" class="hidden">
+          <h1>Results</h1>
+          <div class="result-grid">
+            <div class="box thead">URL</div>
+            <div class="box thead">
+              <span
+                class="tooltip-multiline"
+                data-tooltip="P+: strong positive
+              P: positive
+              NEU: neutral
+              N: negative
+              N+: strong negative
+              NONE: without sentiment"
+                >Polarity</span
+              >
             </div>
-            <div class="">
-                navigation
+            <div class="box thead">
+              <span
+                class="tooltip-multiline"
+                data-tooltip="OBJECTIVE: Text is without subjectivity marks.
+              SUBJECTIVE: Text has subjective marks."
+                >Subjectivity</span
+              >
             </div>
-        </header>
+            <div class="box thead">
+              <span
+                class="tooltip-multiline"
+                data-tooltip="NONIRONIC: Text is without ironic marks.
+            IRONIC: Text has ironic marks."
+                >Irony</span
+              >
+            </div>
+            <div class="box thead">
+              <span
+                class="tooltip-multiline"
+                data-tooltip="Confidence associated with the sentiment analysis performed on the text."
+                >Confidence</span
+              >
+            </div>
+            <div id="targetUrl" class="box tdata"></div>
+            <div id="polarity" class="box tdata"></div>
+            <div id="subjectivity" class="box tdata"></div>
+            <div id="irony" class="box tdata"></div>
+            <div id="confidence" class="box tdata"></div>
+          </div>
+        </div>
+        <!-- Error message. Used to notify user about networking errors. -->
+        <div id="error-message" class="hidden">
+          <div class="error-banner">
+            D'OH! Something went wrong. Please check that the URL you entered is
+            accessible and try again.
+          </div>
+        </div>
+      </section>
+    </main>
 
-        <main>
-            <section>
-                <form class="" onsubmit="return handleSubmit(event)">
-                    <input id="name" type="text" name="input" value="" onblur="onBlur()" placeholder="Name">
-                    <input type="submit" name="" value="submit" onclick="return handleSubmit(event)" onsubmit="return handleSubmit(event)">
-                </form>
-            <section>
-
-            <section>
-                <strong>Form Results:</strong>
-                <div id="results"></div>
-            </section>
-        </main>
-
-        <footer>
-            <p>This is a footer</p>
-        </footer>
-
-    </body>
+    <footer>
+      <p>
+        <!-- Clickable link as demanded by MeaningCloud's Terms of Use.
+             See https://www.meaningcloud.com/terms-and-conditions.
+        -->
+        <a class="text-link" href="https://www.meaningcloud.com/"
+          >Powered by MeaningCloud API</a
+        >
+      </p>
+    </footer>
+  </body>
+  <script>
+    // Check that service workers are supported
+    if ('serviceWorker' in navigator) {
+      // Use the window load event to keep the page load performant
+      window.addEventListener('load', () => {
+        navigator.serviceWorker
+          .register('/service-worker.js')
+          .catch((err) =>
+            console.error('Registering the service worker failed!')
+          );
+      });
+    }
+  </script>
 </html>

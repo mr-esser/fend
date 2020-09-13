@@ -1,23 +1,9 @@
-var path = require('path')
-const express = require('express')
-const mockAPIResponse = require('./mockAPI.js')
+const app = require('./js/app');
 
-const app = express()
-
-app.use(express.static('dist'))
-
-console.log(__dirname)
-
-app.get('/', function (req, res) {
-    // res.sendFile('dist/index.html')
-    res.sendFile(path.resolve('src/client/views/index.html'))
-})
-
-// designates what port the app will listen to for incoming requests
-app.listen(8080, function () {
-    console.log('Example app listening on port 8080!')
-})
-
-app.get('/test', function (req, res) {
-    res.send(mockAPIResponse)
-})
+const PORT = 8080;
+app.listen(PORT, function() {
+  console.log(`NLP app listening on port ${PORT}`);
+  console.log(`App working dir is '${__dirname}'`);
+  // Note(!): env is prepared by the app module
+  console.log(`MeaningCloud API key is ${process.env.API_KEY}`);
+});

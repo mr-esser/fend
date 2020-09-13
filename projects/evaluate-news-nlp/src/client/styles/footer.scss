@@ -1,0 +1,11 @@
+@import 'common';
+
+footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 6vh;
+
+  @include background-gradient(bottom, to top, $dark-blue, $light-blue);
+  @include text-link($body-color);
+}

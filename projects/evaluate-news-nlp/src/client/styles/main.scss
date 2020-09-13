@@ -1,0 +1,48 @@
+@import 'common';
+
+$base-padding: 5px;
+
+.result-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: auto auto;
+}
+
+.thead {
+  color: $header-color;
+  background-color: $text-background-color;
+}
+
+.tdata {
+  /* Set line-height to allow proper bottom-line 
+   * rendering for links */
+  line-height: $base-text-line-height;
+  font-size: 13.5px;
+  @include text-link($header-color);
+}
+
+.box {
+  border: 1px solid $box-outline-color;
+  padding: $base-padding;
+}
+
+[data-tooltip] {
+  cursor: help;
+}
+
+// Overwrites style in css-tooltip to preserve line breaks
+[data-tooltip].tooltip-multiline:before {
+  white-space: pre-line;
+}
+
+// Overwrites spinkit spinner color.
+// Note(!): SASS variable replacement fails here.
+.sk-flow-dot {
+  --sk-color: #ff7f04; // $dark-orange
+}
+
+.error-banner {
+  padding: $base-padding;
+  background-color: darkred;
+  color: $body-color;
+}

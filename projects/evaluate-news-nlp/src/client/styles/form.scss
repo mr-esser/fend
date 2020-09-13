@@ -1,0 +1,32 @@
+@import 'common';
+
+@mixin input-base() {
+  padding: 5px;
+  width: 100%;
+  line-height: $base-text-line-height;
+  margin: 10px 0;
+}
+
+form {
+  border: 1px solid $box-outline-color;
+  border-radius: 4px;
+  padding: 40px;
+}
+
+input {
+  @include input-base();
+  &:invalid {
+    border: 0;
+    box-shadow: 0 0 0 4px red;
+  }
+}
+
+.text {
+  background: $text-background-color;
+}
+
+button {
+  @include input-base();
+  @include background-gradient(top, to bottom, $light-orange, $dark-orange);
+  color: $header-color;
+}

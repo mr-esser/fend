@@ -1,0 +1,19 @@
+@import 'common';
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 40px;
+}
+
+figure {
+  transform: scale(0.8);
+}
+
+.header-item {
+  font-size: 20px;
+  color: $header-color;
+
+  @include text-link($header-color);
+}

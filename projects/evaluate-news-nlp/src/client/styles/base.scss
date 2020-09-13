@@ -1,0 +1,31 @@
+@import 'common';
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  font-family: sans-serif;
+  background-color: $body-color;
+}
+
+main {
+  flex: 2;
+}
+
+section {
+  max-width: 800px;
+  margin: 50px auto;
+}
+
+h1 {
+  margin: 10px 0;
+  font-size: 20px;
+  color: $header-color;
+}
+
+/* Class used to control the content of the page's results section.
+ * Note(!): Must be defined here so that it does play nicely
+ * with the styles in main.scss! */
+.hidden {
+  display: none;
+}

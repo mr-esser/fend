@@ -1,16 +1,37 @@
-function handleSubmit(event) {
-    event.preventDefault()
+import {fetchAnalysisResult} from './fetchAnalysis';
+import {getSubmittedUrl, ResultDiv, updateResultSection,
+  showResultDiv, fillResultGrid} from './pageAccess';
 
-    // check what text was put into the form field
-    let formText = document.getElementById('name').value
-    checkForName(formText)
+// Note(!): 'async' requires special babel plugin and config option to work.
+const handleSubmit = async function(event) {
+  event.preventDefault();
 
-    console.log("::: Form Submitted :::")
-    fetch('http://localhost:8080/test')
-    .then(res => res.json())
-    .then(function(res) {
-        document.getElementById('results').innerHTML = res.message
-    })
-}
+  try {
+    const documentUrl = getSubmittedUrl();
+    /* Note(!) Empty url is permitted in the UI so that users
+     * do not start their workflow in an error state. */
+    if (documentUrl.length === 0) {
+    // Avoid follow-up errors on the server and simply return here
+      return;
+    }
 
-export { handleSubmit }
+    updateResultSection(() => {
+      showResultDiv(ResultDiv.SPINNER);
+    });
+
+    // Note(!): await is essential here to resolve the promise!
+    const analysisResult = await fetchAnalysisResult(documentUrl);
+
+    updateResultSection(() => {
+      fillResultGrid(analysisResult);
+      showResultDiv(ResultDiv.GRID);
+    });
+  } catch (error) {
+    console.error(error);
+    updateResultSection(() => {
+      showResultDiv(ResultDiv.ERROR);
+    });
+  }
+};
+
+export {handleSubmit};
