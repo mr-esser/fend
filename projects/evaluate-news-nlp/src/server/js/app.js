@@ -13,9 +13,10 @@ app.use(bodyParser.urlencoded({
 }));
 
 app.get('/', function(req, res) {
-  // Never actually gets called. Does it?
+  // Never actually gets called, unless there is no
+  // index.html in dist (static root).
   console.debug('::: Get called on "/" :::');
-  res.sendFile('dist/index.html');
+  res.send('Hello, world!');
 });
 
 app.post('/analysis', async function(req, res, next) {
