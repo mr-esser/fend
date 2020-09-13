@@ -4,13 +4,13 @@ This is a small web application that can be used to perform a simple sentiment a
 
 Simply launch the app and bring up the website in your browser. Then, enter a valid URL in the **Document URL** field and press **Analyse** to trigger the analysis. Once complete, the analysis results will appear directly below the input area. Depending on the size of the document you provided, this may take a few seconds. Pop-ups on the result table headers explain the meanings of the values shown.
 
-Internally, the app relies on [MeaningCloud](http:/www.meaningcloud.com)'s NLP offering for the document analysis. So, you will need to sign up for a free API key before using it.
+Internally, the app relies on [MeaningCloud](http:/www.meaningcloud.com)'s NLP offering for the document analysis. So, you will need to sign up for a free API key before using the app.
 
 # Local Setup
 
 1. Install a recent version of Node (>= v14.4.0) and NPM (>= 6.14.8).
 2. Install the necessary dependencies by running `npm install`.
-3. Sign up for a free API key at [meaningcloud.com](https:/www.meaningcloud.com).
+3. Sign up for a free API key at [MeaningCloud](https:/www.meaningcloud.com).
 4. In the project root folder create a file `.env` with your API key in it: `API_KEY=<YourAPIKey>`.
 5. Build the server by running `npm run build-prod`.
 6. Start up the server with `npm run start`.
